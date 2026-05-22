@@ -1,0 +1,70 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "聚闪耀"
+      }
+    },
+    {
+      "path": "pages/login/index",
+      "style": {
+        "navigationBarTitleText": "登录"
+      }
+    },
+    {
+      "path": "pages/user/checkin",
+      "style": {
+        "navigationBarTitleText": "扫码签到"
+      }
+    },
+    {
+      "path": "pages/user/profile",
+      "style": {
+        "navigationBarTitleText": "渐进式画像"
+      }
+    },
+    {
+      "path": "pages/user/shake",
+      "style": {
+        "navigationBarTitleText": "摇一摇"
+      }
+    },
+    {
+      "path": "pages/user/lottery",
+      "style": {
+        "navigationBarTitleText": "抽奖"
+      }
+    },
+    {
+      "path": "pages/user/achievement",
+      "style": {
+        "navigationBarTitleText": "成就卡"
+      }
+    },
+    {
+      "path": "pages/host/dashboard",
+      "style": {
+        "navigationBarTitleText": "场控台"
+      }
+    },
+    {
+      "path": "pages/host/create-event",
+      "style": {
+        "navigationBarTitleText": "创建聚会"
+      }
+    },
+    {
+      "path": "pages/host/lottery-manage",
+      "style": {
+        "navigationBarTitleText": "抽奖管理"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "聚闪耀",
+    "navigationBarBackgroundColor": "#0a0a2e",
+    "backgroundColor": "#0a0a2e"
+  }
+}

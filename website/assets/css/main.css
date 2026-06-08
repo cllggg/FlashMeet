@@ -1,0 +1,183 @@
+/* ============================================================
+ * FlashMeet 全局样式
+ * 设计 token + 渐变文字 + 玻璃拟态 + 滚动揭示动画
+ * ============================================================ */
+
+:root {
+  --fm-bg-deep: #050516;
+  --fm-bg-mid: #0a0a2e;
+  --fm-bg-light: #1a1a4e;
+  --fm-accent-1: #667eea;
+  --fm-accent-2: #764ba2;
+  --fm-accent-3: #4fc3f7;
+  --fm-accent-4: #ff6b6b;
+  --fm-accent-5: #ffd700;
+  --fm-text: #ffffff;
+  --fm-text-soft: rgba(255, 255, 255, 0.72);
+  --fm-text-mute: rgba(255, 255, 255, 0.48);
+  --fm-border: rgba(255, 255, 255, 0.08);
+  --fm-border-strong: rgba(255, 255, 255, 0.18);
+  --fm-grad-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --fm-grad-cool: linear-gradient(135deg, #4fc3f7 0%, #66bb6a 100%);
+  --fm-grad-warm: linear-gradient(135deg, #ff6b6b 0%, #ffd700 100%);
+  --fm-grad-rainbow: linear-gradient(
+    90deg,
+    #667eea,
+    #764ba2,
+    #f093fb,
+    #4fc3f7,
+    #66bb6a
+  );
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--fm-bg-deep);
+  color: var(--fm-text);
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC',
+    'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ===== 工具：渐变文字 ===== */
+.fm-text-gradient {
+  background: var(--fm-grad-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+.fm-text-gradient-cool {
+  background: var(--fm-grad-cool);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+.fm-text-gradient-warm {
+  background: var(--fm-grad-warm);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+.fm-text-gradient-rainbow {
+  background: var(--fm-grad-rainbow);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: fm-rainbow-shift 6s linear infinite;
+}
+@keyframes fm-rainbow-shift {
+  to { background-position: 200% 0; }
+}
+
+/* ===== 工具：玻璃拟态卡片 ===== */
+.fm-glass {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--fm-border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 1.25rem;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.fm-glass:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(102, 126, 234, 0.45);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -20px rgba(102, 126, 234, 0.4);
+}
+
+/* ===== 工具：CTA 按钮 ===== */
+.fm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.95rem 2.2rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 1.05rem;
+  cursor: pointer;
+  border: none;
+  transition: all 0.25s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.fm-btn-primary {
+  background: var(--fm-grad-primary);
+  color: white;
+  box-shadow: 0 8px 24px -8px rgba(102, 126, 234, 0.6);
+}
+.fm-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px -8px rgba(102, 126, 234, 0.8);
+}
+.fm-btn-ghost {
+  background: transparent;
+  color: var(--fm-text-soft);
+  border: 1px solid var(--fm-border-strong);
+}
+.fm-btn-ghost:hover {
+  color: white;
+  border-color: rgba(102, 126, 234, 0.6);
+  background: rgba(102, 126, 234, 0.08);
+}
+
+/* ===== 工具：滚动揭示 ===== */
+.fm-reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.fm-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.fm-reveal-delay-1 { transition-delay: 0.08s; }
+.fm-reveal-delay-2 { transition-delay: 0.16s; }
+.fm-reveal-delay-3 { transition-delay: 0.24s; }
+.fm-reveal-delay-4 { transition-delay: 0.32s; }
+
+/* ===== 通用动画 ===== */
+@keyframes fm-float {
+  0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+  50% { transform: translateY(-20px) translateX(8px); opacity: 0.8; }
+}
+@keyframes fm-pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.4); }
+  50% { box-shadow: 0 0 0 16px rgba(102, 126, 234, 0); }
+}
+@keyframes fm-spin-slow {
+  to { transform: rotate(360deg); }
+}
+.fm-pulse-glow { animation: fm-pulse-glow 2.4s ease-in-out infinite; }
+.fm-spin-slow { animation: fm-spin-slow 12s linear infinite; }
+
+/* ===== 数字字符等宽 ===== */
+.fm-tabular { font-variant-numeric: tabular-nums; }
+
+/* ===== 全局选区配色 ===== */
+::selection {
+  background: rgba(102, 126, 234, 0.4);
+  color: white;
+}
+
+/* ===== 滚动条 ===== */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--fm-bg-deep); }
+::-webkit-scrollbar-thumb {
+  background: rgba(102, 126, 234, 0.3);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(102, 126, 234, 0.5); }

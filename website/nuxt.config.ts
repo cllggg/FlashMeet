@@ -3,13 +3,29 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: false },
   modules: ['@nuxtjs/tailwindcss'],
+  css: ['~/assets/css/main.css'],
+  components: [
+    { path: '~/components', pathPrefix: false },
+  ],
   app: {
     head: {
-      title: '聚闪耀 FlashMeet - 计算相遇的概率，渲染心动的瞬间',
+      htmlAttrs: { lang: 'zh-CN' },
+      title: '聚闪耀 FlashMeet - 让每一场聚会都闪耀',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: '聚闪耀 - 线下聚会互动大屏系统，让每一场聚会都闪耀' },
+        {
+          name: 'description',
+          content:
+            '聚闪耀 FlashMeet - 线下聚会互动大屏系统：扫码签到、实时互动游戏、智能匹配、数字成就卡。让 30 秒破冰不再只是传说。',
+        },
+        { name: 'theme-color', content: '#0a0a2e' },
+        { property: 'og:title', content: '聚闪耀 FlashMeet' },
+        {
+          property: 'og:description',
+          content: '计算相遇的概率，渲染心动的瞬间。',
+        },
+        { property: 'og:type', content: 'website' },
       ],
     },
   },

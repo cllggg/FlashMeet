@@ -1,43 +1,43 @@
 import process from 'node:process';globalThis._importMeta_={url:import.meta.url,env:process.env};import { tmpdir } from 'node:os';
+import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, sendRedirect, proxyRequest, getRequestHeader, setResponseHeaders, setResponseStatus, send, getRequestHeaders, setResponseHeader, appendResponseHeader, getRequestURL, getResponseHeader, removeResponseHeader, createError, getQuery as getQuery$1, readBody, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getResponseStatus, getRouterParam, getResponseStatusText } from 'file:///Users/liyijia/Create/FlashMeet/website/node_modules/h3/dist/index.mjs';
 import { Server } from 'node:http';
 import { resolve, dirname, join } from 'node:path';
 import nodeCrypto from 'node:crypto';
 import { parentPort, threadId } from 'node:worker_threads';
-import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, sendRedirect, proxyRequest, getRequestHeader, setResponseHeaders, setResponseStatus, send, getRequestHeaders, setResponseHeader, appendResponseHeader, getRequestURL, getResponseHeader, removeResponseHeader, createError, getQuery as getQuery$1, readBody, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getResponseStatus, getRouterParam, getResponseStatusText } from 'file://E:/Test/FlashMeet/website/node_modules/h3/dist/index.mjs';
-import { escapeHtml } from 'file://E:/Test/FlashMeet/website/node_modules/@vue/shared/dist/shared.cjs.js';
-import { createRenderer, getRequestDependencies, getPreloadLinks, getPrefetchLinks } from 'file://E:/Test/FlashMeet/website/node_modules/vue-bundle-renderer/dist/runtime.mjs';
-import { parseURL, withoutBase, joinURL, getQuery, withQuery, withTrailingSlash, decodePath, withLeadingSlash, withoutTrailingSlash, joinRelativeURL } from 'file://E:/Test/FlashMeet/website/node_modules/ufo/dist/index.mjs';
-import { renderToString } from 'file://E:/Test/FlashMeet/website/node_modules/vue/server-renderer/index.mjs';
-import { klona } from 'file://E:/Test/FlashMeet/website/node_modules/klona/dist/index.mjs';
-import defu, { defuFn } from 'file://E:/Test/FlashMeet/website/node_modules/defu/dist/defu.mjs';
-import destr, { destr as destr$1 } from 'file://E:/Test/FlashMeet/website/node_modules/destr/dist/index.mjs';
-import { snakeCase } from 'file://E:/Test/FlashMeet/website/node_modules/scule/dist/index.mjs';
-import { createHead as createHead$1, propsToString, renderSSRHead } from 'file://E:/Test/FlashMeet/website/node_modules/unhead/dist/server.mjs';
-import { stringify, uneval } from 'file://E:/Test/FlashMeet/website/node_modules/devalue/index.js';
-import { isVNode, isRef, toValue } from 'file://E:/Test/FlashMeet/website/node_modules/vue/index.mjs';
-import { DeprecationsPlugin, PromisesPlugin, TemplateParamsPlugin, AliasSortingPlugin } from 'file://E:/Test/FlashMeet/website/node_modules/unhead/dist/plugins.mjs';
-import { createHooks } from 'file://E:/Test/FlashMeet/website/node_modules/hookable/dist/index.mjs';
-import { createFetch, Headers as Headers$1 } from 'file://E:/Test/FlashMeet/website/node_modules/ofetch/dist/node.mjs';
-import { fetchNodeRequestHandler, callNodeRequestHandler } from 'file://E:/Test/FlashMeet/website/node_modules/node-mock-http/dist/index.mjs';
-import { createStorage, prefixStorage } from 'file://E:/Test/FlashMeet/website/node_modules/unstorage/dist/index.mjs';
-import unstorage_47drivers_47fs from 'file://E:/Test/FlashMeet/website/node_modules/unstorage/drivers/fs.mjs';
-import { digest } from 'file://E:/Test/FlashMeet/website/node_modules/ohash/dist/index.mjs';
-import { toRouteMatcher, createRouter } from 'file://E:/Test/FlashMeet/website/node_modules/radix3/dist/index.mjs';
+import { escapeHtml } from 'file:///Users/liyijia/Create/FlashMeet/website/node_modules/@vue/shared/dist/shared.cjs.js';
+import { createRenderer, getRequestDependencies, getPreloadLinks, getPrefetchLinks } from 'file:///Users/liyijia/Create/FlashMeet/website/node_modules/vue-bundle-renderer/dist/runtime.mjs';
+import { parseURL, withoutBase, joinURL, getQuery, withQuery, withTrailingSlash, decodePath, withLeadingSlash, withoutTrailingSlash, joinRelativeURL } from 'file:///Users/liyijia/Create/FlashMeet/website/node_modules/ufo/dist/index.mjs';
+import { renderToString } from 'file:///Users/liyijia/Create/FlashMeet/website/node_modules/vue/server-renderer/index.mjs';
+import destr, { destr as destr$1 } from 'file:///Users/liyijia/Create/FlashMeet/website/node_modules/destr/dist/index.mjs';
+import { createHooks } from 'file:///Users/liyijia/Create/FlashMeet/website/node_modules/hookable/dist/index.mjs';
+import { createFetch, Headers as Headers$1 } from 'file:///Users/liyijia/Create/FlashMeet/website/node_modules/ofetch/dist/node.mjs';
+import { fetchNodeRequestHandler, callNodeRequestHandler } from 'file:///Users/liyijia/Create/FlashMeet/website/node_modules/node-mock-http/dist/index.mjs';
+import { createStorage, prefixStorage } from 'file:///Users/liyijia/Create/FlashMeet/website/node_modules/unstorage/dist/index.mjs';
+import unstorage_47drivers_47fs from 'file:///Users/liyijia/Create/FlashMeet/website/node_modules/unstorage/drivers/fs.mjs';
+import { digest } from 'file:///Users/liyijia/Create/FlashMeet/website/node_modules/ohash/dist/index.mjs';
+import { klona } from 'file:///Users/liyijia/Create/FlashMeet/website/node_modules/klona/dist/index.mjs';
+import defu, { defuFn } from 'file:///Users/liyijia/Create/FlashMeet/website/node_modules/defu/dist/defu.mjs';
+import { snakeCase } from 'file:///Users/liyijia/Create/FlashMeet/website/node_modules/scule/dist/index.mjs';
+import { getContext } from 'file:///Users/liyijia/Create/FlashMeet/website/node_modules/unctx/dist/index.mjs';
+import { toRouteMatcher, createRouter } from 'file:///Users/liyijia/Create/FlashMeet/website/node_modules/radix3/dist/index.mjs';
 import { readFile } from 'node:fs/promises';
-import consola, { consola as consola$1 } from 'file://E:/Test/FlashMeet/website/node_modules/consola/dist/index.mjs';
-import { ErrorParser } from 'file://E:/Test/FlashMeet/website/node_modules/youch-core/build/index.js';
-import { Youch } from 'file://E:/Test/FlashMeet/website/node_modules/youch/build/index.js';
-import { SourceMapConsumer } from 'file://E:/Test/FlashMeet/website/node_modules/source-map/source-map.js';
+import consola, { consola as consola$1 } from 'file:///Users/liyijia/Create/FlashMeet/website/node_modules/consola/dist/index.mjs';
+import { ErrorParser } from 'file:///Users/liyijia/Create/FlashMeet/website/node_modules/youch-core/build/index.js';
+import { Youch } from 'file:///Users/liyijia/Create/FlashMeet/website/node_modules/youch/build/index.js';
+import { SourceMapConsumer } from 'file:///Users/liyijia/Create/FlashMeet/website/node_modules/source-map/source-map.js';
 import { AsyncLocalStorage } from 'node:async_hooks';
-import { getContext } from 'file://E:/Test/FlashMeet/website/node_modules/unctx/dist/index.mjs';
-import { captureRawStackTrace, parseRawStackTrace } from 'file://E:/Test/FlashMeet/website/node_modules/errx/dist/index.js';
-import _wH6JrtIxmaSoA8lCPWFnE9z4lQeXW6H5z3l5aymEQw from 'file://E:/Test/FlashMeet/website/node_modules/@nuxt/vite-builder/dist/fix-stacktrace.mjs';
+import { stringify, uneval } from 'file:///Users/liyijia/Create/FlashMeet/website/node_modules/devalue/index.js';
+import { captureRawStackTrace, parseRawStackTrace } from 'file:///Users/liyijia/Create/FlashMeet/website/node_modules/errx/dist/index.js';
+import { isVNode, isRef, toValue } from 'file:///Users/liyijia/Create/FlashMeet/website/node_modules/vue/index.mjs';
+import _wH6JrtIxmaSoA8lCPWFnE9z4lQeXW6H5z3l5aymEQw from 'file:///Users/liyijia/Create/FlashMeet/website/node_modules/@nuxt/vite-builder/dist/fix-stacktrace.mjs';
 import { promises } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { dirname as dirname$1, resolve as resolve$1 } from 'file://E:/Test/FlashMeet/website/node_modules/pathe/dist/index.mjs';
-import { walkResolver } from 'file://E:/Test/FlashMeet/website/node_modules/unhead/dist/utils.mjs';
+import { dirname as dirname$1, resolve as resolve$1 } from 'file:///Users/liyijia/Create/FlashMeet/website/node_modules/pathe/dist/index.mjs';
+import { createHead as createHead$1, propsToString, renderSSRHead } from 'file:///Users/liyijia/Create/FlashMeet/website/node_modules/unhead/dist/server.mjs';
+import { DeprecationsPlugin, PromisesPlugin, TemplateParamsPlugin, AliasSortingPlugin } from 'file:///Users/liyijia/Create/FlashMeet/website/node_modules/unhead/dist/plugins.mjs';
+import { walkResolver } from 'file:///Users/liyijia/Create/FlashMeet/website/node_modules/unhead/dist/utils.mjs';
 
-const serverAssets = [{"baseName":"server","dir":"E:/Test/FlashMeet/website/server/assets"}];
+const serverAssets = [{"baseName":"server","dir":"/Users/liyijia/Create/FlashMeet/website/server/assets"}];
 
 const assets$1 = createStorage();
 
@@ -49,11 +49,11 @@ const storage = createStorage({});
 
 storage.mount('/assets', assets$1);
 
-storage.mount('root', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"E:/Test/FlashMeet/website","watchOptions":{"ignored":[null]}}));
-storage.mount('src', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"E:/Test/FlashMeet/website/server","watchOptions":{"ignored":[null]}}));
-storage.mount('build', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"E:/Test/FlashMeet/website/.nuxt"}));
-storage.mount('cache', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"E:/Test/FlashMeet/website/.nuxt/cache"}));
-storage.mount('data', unstorage_47drivers_47fs({"driver":"fs","base":"E:/Test/FlashMeet/website/.data/kv"}));
+storage.mount('root', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"/Users/liyijia/Create/FlashMeet/website","watchOptions":{"ignored":[null]}}));
+storage.mount('src', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"/Users/liyijia/Create/FlashMeet/website/server","watchOptions":{"ignored":[null]}}));
+storage.mount('build', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"/Users/liyijia/Create/FlashMeet/website/.nuxt"}));
+storage.mount('cache', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"/Users/liyijia/Create/FlashMeet/website/.nuxt/cache"}));
+storage.mount('data', unstorage_47drivers_47fs({"driver":"fs","base":"/Users/liyijia/Create/FlashMeet/website/.data/kv"}));
 
 function useStorage(base = "") {
   return base ? prefixStorage(storage, base) : storage;
@@ -692,6 +692,11 @@ new Proxy(/* @__PURE__ */ Object.create(null), {
     }
     return void 0;
   }
+});
+
+getContext("nitro-app", {
+  asyncContext: false,
+  AsyncLocalStorage: void 0
 });
 
 const config = useRuntimeConfig();
@@ -2010,9 +2015,9 @@ async function errorHandler(error, event) {
   // H3 will handle fallback
 }
 
-const rootDir = "E:/Test/FlashMeet/website";
+const rootDir = "/Users/liyijia/Create/FlashMeet/website";
 
-const appHead = {"meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"name":"description","content":"聚闪耀 - 线下聚会互动大屏系统，让每一场聚会都闪耀"}],"link":[],"style":[],"script":[],"noscript":[],"title":"聚闪耀 FlashMeet - 计算相遇的概率，渲染心动的瞬间"};
+const appHead = {"meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"name":"description","content":"聚闪耀 FlashMeet - 线下聚会互动大屏系统：扫码签到、实时互动游戏、智能匹配、数字成就卡。让 30 秒破冰不再只是传说。"},{"name":"theme-color","content":"#0a0a2e"},{"property":"og:title","content":"聚闪耀 FlashMeet"},{"property":"og:description","content":"计算相遇的概率，渲染心动的瞬间。"},{"property":"og:type","content":"website"}],"link":[],"style":[],"script":[],"noscript":[],"htmlAttrs":{"lang":"zh-CN"},"title":"聚闪耀 FlashMeet - 让每一场聚会都闪耀"};
 
 const appRootTag = "div";
 
@@ -2035,7 +2040,7 @@ const asyncContext = getContext("nuxt-dev", {
 	asyncContext: true,
 	AsyncLocalStorage
 });
-const _95MuEYTtjO_XJ6tTnJfAsproBKL1V32fIkHirU6Vk = (nitroApp) => {
+const _3ioEo4txnPvK78GOxoDZzYxTFduXl5EErxMxYOkDqNU = (nitroApp) => {
 	const handler = nitroApp.h3App.handler;
 	nitroApp.h3App.handler = (event) => {
 		return asyncContext.callAsync({
@@ -2109,7 +2114,7 @@ function onConsoleLog(callback) {
 }
 
 const plugins = [
-  _95MuEYTtjO_XJ6tTnJfAsproBKL1V32fIkHirU6Vk,
+  _3ioEo4txnPvK78GOxoDZzYxTFduXl5EErxMxYOkDqNU,
 _wH6JrtIxmaSoA8lCPWFnE9z4lQeXW6H5z3l5aymEQw
 ];
 
@@ -2138,7 +2143,7 @@ function getAsset (id) {
 
 const METHODS = /* @__PURE__ */ new Set(["HEAD", "GET"]);
 const EncodingMap = { gzip: ".gz", br: ".br" };
-const __CBC0U = eventHandler((event) => {
+const _s2Map3 = eventHandler((event) => {
   if (event.method && !METHODS.has(event.method)) {
     return;
   }
@@ -2280,9 +2285,9 @@ function publicAssetsURL(...path) {
 const APP_ROOT_OPEN_TAG = `<${appRootTag}${propsToString(appRootAttrs)}>`;
 const APP_ROOT_CLOSE_TAG = `</${appRootTag}>`;
 // @ts-expect-error file will be produced after app build
-const getServerEntry = () => import('file://E:/Test/FlashMeet/website/.nuxt//dist/server/server.mjs').then((r) => r.default || r);
+const getServerEntry = () => import('file:///Users/liyijia/Create/FlashMeet/website/.nuxt//dist/server/server.mjs').then((r) => r.default || r);
 // @ts-expect-error file will be produced after app build
-const getClientManifest = () => import('file://E:/Test/FlashMeet/website/.nuxt//dist/server/client.manifest.mjs').then((r) => r.default || r).then((r) => typeof r === "function" ? r() : r);
+const getClientManifest = () => import('file:///Users/liyijia/Create/FlashMeet/website/.nuxt//dist/server/client.manifest.mjs').then((r) => r.default || r).then((r) => typeof r === "function" ? r() : r);
 // -- SSR Renderer --
 const getSSRRenderer = lazyCachedFunction(async () => {
 	// Load server bundle
@@ -2573,13 +2578,13 @@ async function getIslandContext(event) {
 	};
 }
 
-const _lazy_nlqTcF = () => Promise.resolve().then(function () { return renderer; });
+const _lazy_o7kfug = () => Promise.resolve().then(function () { return renderer; });
 
 const handlers = [
-  { route: '', handler: __CBC0U, lazy: false, middleware: true, method: undefined },
-  { route: '/__nuxt_error', handler: _lazy_nlqTcF, lazy: true, middleware: false, method: undefined },
+  { route: '', handler: _s2Map3, lazy: false, middleware: true, method: undefined },
+  { route: '/__nuxt_error', handler: _lazy_o7kfug, lazy: true, middleware: false, method: undefined },
   { route: '/__nuxt_island/**', handler: handler$1, lazy: false, middleware: false, method: undefined },
-  { route: '/**', handler: _lazy_nlqTcF, lazy: true, middleware: false, method: undefined }
+  { route: '/**', handler: _lazy_o7kfug, lazy: true, middleware: false, method: undefined }
 ];
 
 function createNitroApp() {

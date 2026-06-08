@@ -427,7 +427,8 @@ npm run generate            # 静态站产物在 .output/public/
 
 ---
 
-## 九、版本与协议
+## 九、版权
 
 - 项目当前阶段：**内测版**
-- 协议：未指定（建议正式发布前明确 License）
+- 开发者：[liyijia]
+- 微信：【cllggg】

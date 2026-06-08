@@ -25,14 +25,16 @@ export class ScreenController {
     const event = await this.eventRepo.findOne({ where: { event_id: eventId } });
     if (!event) return null;
     // 扫码进小程序的短链：用于大屏生成二维码
-    // 客户端扫到后跳到 miniapp 的 checkin 页面（uni-app H5 用 hash 路由）
-    //
-    // 注意：后端不知道调用方（手机/大屏）的局域网 IP，所以只能返回路径部分，
-    // 由大屏前端在自己 host 上拼出 miniapp 的完整 URL。
-    // 若硬要后端生成完整地址，可通过环境变量 SCREEN_JOIN_URL 注入（必须含 http(s)://）。
+    // v3.0 极简：所有用户功能收口在 `pages/live/index`（Live 容器），扫码后直达。
+    // 注意：
+    //   1. 后端不知道调用方（手机/大屏）的局域网 IP，所以只能返回路径部分，
+    //      由大屏前端在自己 host 上拼出 miniapp 的完整 URL。
+    //   2. 若硬要后端生成完整地址，可通过环境变量 SCREEN_JOIN_URL 注入（必须含 http(s)://）。
+    //   3. query 参数名使用 `eventId`（不是 `event_id`），与 `pages/live/index` 内
+    //      `onLoad((q) => { eventIdRef.value = q?.eventId || ... })` 保持一致。
     const joinUrl =
       this.config.get<string>('SCREEN_JOIN_URL') ||
-      `/#/pages/user/checkin?event_id=${event.event_id}`;
+      `/#/pages/live/index?eventId=${event.event_id}`;
     return {
       event_id: event.event_id,
       title: event.title,

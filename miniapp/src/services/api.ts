@@ -28,6 +28,12 @@ export const eventApi = {
     request({ url: '/event/host/my' }),
   getPresence: (eventId: string) =>
     request({ url: `/event/${eventId}/presence` }),
+  // v2.0 体验流
+  getStream: (eventId: string) =>
+    request({ url: `/event/${eventId}/stream` }),
+  // v2.0 Host Assistant：服务端建议（与本地规则等价但便于接 AI）
+  getSuggestions: (eventId: string) =>
+    request({ url: `/event/${eventId}/suggestions` }),
 };
 
 export const checkinApi = {

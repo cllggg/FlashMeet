@@ -8,7 +8,7 @@ const WHITE_LIST = [
   "/pages/index/index",
   // 签到流程：扫码后必须能直接进入，否则 token 还没拿到就被踢回 login，
   // 会导致大屏二维码扫了进不来。checkin 内部会自动签发 user_token 并写回本地。
-  "/pages/user/checkin",
+  "/pages/live/index",
 ];
 
 const isWhiteListed = (route: string) => {

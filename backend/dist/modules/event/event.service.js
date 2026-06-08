@@ -97,12 +97,16 @@ let EventService = class EventService {
             if (!(0, state_transitions_1.isTransitionAllowed)(event.current_state, targetState)) {
                 throw new common_1.BadRequestException(`Illegal state transition: ${event.current_state} -> ${targetState}`);
             }
+            const previousState = event.current_state;
             event.current_state = targetState;
             await this.eventRepo.save(event);
             await this.redis.set((0, exports.EVENT_STATE_KEY)(eventId), targetState);
             this.emitter.emit(app_events_1.APP_EVENTS.SCENE_CHANGED, {
                 event_id: eventId,
-                new_state: targetState,
+                state: targetState,
+                previous_state: previousState,
+                changed_by: userId,
+                at: Date.now(),
             });
             return targetState;
         }

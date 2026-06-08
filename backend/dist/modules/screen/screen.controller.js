@@ -39,7 +39,7 @@ let ScreenController = class ScreenController {
         if (!event)
             return null;
         const joinUrl = this.config.get('SCREEN_JOIN_URL') ||
-            `/#/pages/user/checkin?event_id=${event.event_id}`;
+            `/#/pages/live/index?eventId=${event.event_id}`;
         return {
             event_id: event.event_id,
             title: event.title,

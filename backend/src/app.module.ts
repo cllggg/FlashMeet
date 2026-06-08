@@ -17,6 +17,8 @@ import { ScreenModule } from './modules/screen/screen.module';
 import { PublicModule } from './modules/public/public.module';
 import { HealthModule } from './modules/health/health.module';
 import { TelemetryModule } from './modules/telemetry/telemetry.module';
+import { HostAssistantModule } from './modules/host-assistant/host-assistant.module';
+import { ExperienceStreamModule } from './modules/experience-stream/experience-stream.module';
 import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
 import { ShakeGuardMiddleware } from './common/middleware/shake-guard.middleware';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
@@ -71,6 +73,8 @@ import { RateLimitGuard } from './common/guards/rate-limit.guard';
     GatewayModule,
     HealthModule,
     TelemetryModule,
+    HostAssistantModule,
+    ExperienceStreamModule,
   ],
   providers: [
     {

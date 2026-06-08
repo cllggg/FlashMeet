@@ -26,6 +26,8 @@ const screen_module_1 = require("./modules/screen/screen.module");
 const public_module_1 = require("./modules/public/public.module");
 const health_module_1 = require("./modules/health/health.module");
 const telemetry_module_1 = require("./modules/telemetry/telemetry.module");
+const host_assistant_module_1 = require("./modules/host-assistant/host-assistant.module");
+const experience_stream_module_1 = require("./modules/experience-stream/experience-stream.module");
 const request_id_middleware_1 = require("./common/middleware/request-id.middleware");
 const shake_guard_middleware_1 = require("./common/middleware/shake-guard.middleware");
 const logging_interceptor_1 = require("./common/interceptors/logging.interceptor");
@@ -87,6 +89,8 @@ exports.AppModule = AppModule = __decorate([
             gateway_module_1.GatewayModule,
             health_module_1.HealthModule,
             telemetry_module_1.TelemetryModule,
+            host_assistant_module_1.HostAssistantModule,
+            experience_stream_module_1.ExperienceStreamModule,
         ],
         providers: [
             {

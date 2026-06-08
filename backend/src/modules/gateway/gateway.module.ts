@@ -5,6 +5,7 @@ import { EventModule } from '../event/event.module';
 import { GlobalUser } from '../global-user/entities/global-user.entity';
 import { IcebreakerModule } from '../icebreaker/icebreaker.module';
 import { MatchModule } from '../match/match.module';
+import { ExperienceStreamModule } from '../experience-stream/experience-stream.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { MatchModule } from '../match/match.module';
     EventModule,
     IcebreakerModule,
     MatchModule,
+    ExperienceStreamModule,
   ],
   providers: [EventGateway],
   exports: [EventGateway],

@@ -1,9 +1,6 @@
 <template>
   <div class="event-screen">
-    <!-- FPS Warning -->
-    <div v-if="showFpsWarning" class="fps-warning">
-      检测到设备性能较低，已自动切换为2D模式
-    </div>
+    <!-- v3.0: 不再有 FPS 降级与 2D 兜底 -->
 
     <!-- 主题切换器（右上角悬浮） -->
     <div class="theme-toggle" @click="toggleTheme" title="切换主题">
@@ -19,16 +16,17 @@
       </span>
     </div>
 
-    <!-- 场景切换过渡动画 -->
-    <Transition :name="transitionName" mode="out-in">
-      <component
-        :is="currentSceneComponent"
-        :key="currentState"
-        v-bind="currentSceneProps"
-        ref="shakeSceneRef"
-        @update:checkin-users="onNewCheckin"
-      />
-    </Transition>
+    <!-- v3.0: 统一 3D 舞台，所有状态共用一个 Stage3D 实例 -->
+    <Stage3D
+      ref="stageRef"
+      :event="event"
+      :checkin-users="checkinUsers"
+      :question="icebreakerQuestion"
+      :star-lit-events="starLitEvents"
+      :winners="winners"
+      :leaderboard="shakeLeaderboard"
+      :pairs="matchPairs"
+    />
 
     <!-- 始终显示扫码加入（除 ENDED 外） -->
     <JoinQR
@@ -36,6 +34,9 @@
       :join-url="finalJoinUrl"
       :event-id="eventId"
     />
+
+    <!-- v2.0: 底部活动进度条（让观众也看到节奏） -->
+    <QueueStrip :current-state="currentState" />
 
     <!-- 活动不存在兑底 -->
     <div v-if="notFound" class="not-found-mask">
@@ -56,7 +57,6 @@ import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { EventStatus, WsEvent } from '../types/enums';
 import { socketService } from '../services/socket';
-import { FpsDetector } from '../utils/fps-detector';
 import api from '../services/api';
 import {
   cycleTheme,
@@ -65,15 +65,9 @@ import {
   type ThemeName,
 } from '../utils/theme';
 import { startTelemetry, stopTelemetry, reportMetric } from '../utils/telemetry';
-import StandbyScene from '../components/StandbyScene.vue';
-import CheckinScene from '../components/CheckinScene.vue';
-import IcebreakerScene from '../components/IcebreakerScene.vue';
-import LotteryReadyScene from '../components/LotteryReadyScene.vue';
-import LotteryRunningScene from '../components/LotteryRunningScene.vue';
-import ShakeGameScene from '../components/ShakeGameScene.vue';
-import MatchScene from '../components/MatchScene.vue';
-import EndedScene from '../components/EndedScene.vue';
+import Stage3D from '../components/Stage3D.vue';
 import JoinQR from '../components/JoinQR.vue';
+import QueueStrip from '../components/QueueStrip.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -113,12 +107,11 @@ const event = ref<any>({});
 const checkinUsers = ref<any[]>([]);
 const winners = ref<any[]>([]);
 const shakeLeaderboard = ref<any[]>([]);
-const shakeSceneRef = ref<any>(null);
-const use3D = ref(true);
-const showFpsWarning = ref(false);
+const stageRef = ref<any>(null);
 const wsStatus = ref<'connecting' | 'open' | 'closed'>('connecting');
 const notFound = ref(false);
 let pollTimer: ReturnType<typeof setInterval> | null = null;
+let offStatus: () => void = () => {}; // 由 onMounted 内 onStatusChange 赋值
 
 // Icebreaker
 const icebreakerQuestion = ref<any | null>(null);
@@ -127,61 +120,11 @@ const starLitEvents = ref<any[]>([]);
 // Match
 const matchPairs = ref<any[]>([]);
 
-// 场景组件映射
-const sceneComponentMap: Record<string, any> = {
-  [EventStatus.STANDBY]: StandbyScene,
-  [EventStatus.CHECKIN]: CheckinScene,
-  [EventStatus.ICEBREAKER]: IcebreakerScene,
-  [EventStatus.LOTTERY_READY]: LotteryReadyScene,
-  [EventStatus.LOTTERY_RUNNING]: LotteryRunningScene,
-  [EventStatus.GAME_SHAKE]: ShakeGameScene,
-  [EventStatus.GAME_MATCH]: MatchScene,
-  [EventStatus.ENDED]: EndedScene,
-};
-
-const currentSceneComponent = computed(() => {
-  return sceneComponentMap[currentState.value] || StandbyScene;
-});
-
-const currentSceneProps = computed(() => {
-  const base: any = { event: event.value };
-  switch (currentState.value) {
-    case EventStatus.CHECKIN:
-      return { ...base, checkinUsers: checkinUsers.value, use3D: use3D.value };
-    case EventStatus.ICEBREAKER:
-      return {
-        ...base,
-        question: icebreakerQuestion.value,
-        starLitEvents: starLitEvents.value,
-        checkinUsers: checkinUsers.value,
-        use3D: use3D.value,
-      };
-    case EventStatus.LOTTERY_RUNNING:
-      return { ...base, winners: winners.value };
-    case EventStatus.GAME_SHAKE:
-      return { ...base, leaderboard: shakeLeaderboard.value };
-    case EventStatus.GAME_MATCH:
-      return { ...base, pairs: matchPairs.value };
-    default:
-      return base;
+// v3.0: 状态变化时通知 Stage3D 切换模式
+watch(currentState, (newState) => {
+  if (stageRef.value?.setState) {
+    stageRef.value.setState(newState);
   }
-});
-
-// 场景切换方向：根据状态顺序决定动画方向
-const transitionName = computed(() => {
-  const order = [
-    EventStatus.STANDBY,
-    EventStatus.CHECKIN,
-    EventStatus.ICEBREAKER,
-    EventStatus.LOTTERY_READY,
-    EventStatus.LOTTERY_RUNNING,
-    EventStatus.GAME_SHAKE,
-    EventStatus.GAME_MATCH,
-    EventStatus.ENDED,
-  ];
-  const fromIdx = order.indexOf(previousState.value);
-  const toIdx = order.indexOf(currentState.value);
-  return toIdx >= fromIdx ? 'scene-forward' : 'scene-backward';
 });
 
 const onSceneUpdated = (data: { state: EventStatus; event_id: string }) => {
@@ -205,16 +148,6 @@ const onNewCheckin = (data: any) => {
 
 const onShakeLeaderboard = (data: any) => {
   shakeLeaderboard.value = data.leaderboard;
-};
-
-const onShakeStarted = (data: any) => {
-  shakeSceneRef.value?.onShakeStarted?.(data);
-  import('../utils/sound').then(m => m.playShakeStartSound());
-};
-
-const onShakeEnded = (data: any) => {
-  shakeSceneRef.value?.onShakeEnded?.(data);
-  import('../utils/sound').then(m => m.playShakeEndSound());
 };
 
 const onLotteryWinner = (data: any) => {
@@ -301,13 +234,9 @@ const loadInitialData = async () => {
         const { data: shakeData } = await api.get(
           `/screen/event/${eventId}/shake-session`,
         );
-        if (shakeData?.active && shakeSceneRef.value?.onShakeStarted) {
-          shakeSceneRef.value.onShakeStarted({
-            event_id: eventId,
-            started_at: shakeData.server_now,
-            ends_at: shakeData.ends_at,
-            duration_ms: shakeData.ends_at - shakeData.server_now,
-          });
+        if (shakeData?.active) {
+          // v3.0: Stage3D 内部已经显示倒计时 UI，此处仅打点
+          reportMetric('event', { name: 'shake_recovered' }, { event_id: eventId });
         }
       } catch {}
     }
@@ -370,13 +299,9 @@ const pollAll = async (isOnline: boolean) => {
         const { data: shakeData } = await api.get(
           `/screen/event/${eventId}/shake-session`,
         );
-        if (shakeData?.active && shakeSceneRef.value?.onShakeStarted) {
-          shakeSceneRef.value.onShakeStarted({
-            event_id: eventId,
-            started_at: shakeData.server_now,
-            ends_at: shakeData.ends_at,
-            duration_ms: shakeData.ends_at - shakeData.server_now,
-          });
+        if (shakeData?.active) {
+          // v3.0: Stage3D 自己接管倒计时 UI，此处只保留状态
+          console.log('shake session active, ends_at:', shakeData.ends_at);
         }
       } catch {}
     }
@@ -396,36 +321,12 @@ const switchPolling = (isOnline: boolean) => {
 onMounted(async () => {
   await loadInitialData();
 
-  // 启动性能埋点（FPS + 错误捕获 + scene 切换事件）
+  // 启动性能埋点（错误捕获 + scene 切换事件）
   startTelemetry({ eventId });
 
-  // FPS 双向自适应 + 场景切换 reset
-  const detector = new FpsDetector({
-    degradeBelow: 24,
-    recoverAbove: 36,
-    degradeStreak: 3,
-    recoverStreak: 5,
-    changeCooldownMs: 5000,
-  });
-  detector.onChange((_avg, degraded) => {
-    if (degraded !== use3D.value) {
-      // degraded=true 表示建议 2D（use3D=false）；反之亦然
-      use3D.value = !degraded;
-      // 仅在降级时给提示
-      if (degraded) {
-        showFpsWarning.value = true;
-        setTimeout(() => (showFpsWarning.value = false), 3000);
-      }
-    }
-  });
-  detector.start();
-  // 卸载时清理
-  onUnmounted(() => detector.stop());
-
-  // 场景切换时重置 FPS 评估，让新场景独立采样
+  // v3.0: 不再有 FPS 双向自适应与 2D 兜底
+  // 仅保留场景切换音效反馈
   watch(currentState, (newState, oldState) => {
-    detector.reset();
-    // 场景切换音效
     if (newState && oldState && newState !== oldState) {
       import('../utils/sound').then(m => m.playSceneSwitchSound());
     }
@@ -435,8 +336,6 @@ onMounted(async () => {
   socketService.onSceneUpdated(onSceneUpdated);
   socketService.onUserCheckedIn(onNewCheckin);
   socketService.onShakeLeaderboard(onShakeLeaderboard);
-  socketService.onShakeStarted(onShakeStarted);
-  socketService.onShakeEnded(onShakeEnded);
   socketService.onLotteryWinner(onLotteryWinner);
   socketService.onIcebreakerQuestion(onIcebreakerQuestion);
   socketService.onIcebreakerClosed(onIcebreakerClosed);
@@ -445,19 +344,15 @@ onMounted(async () => {
   socketService.onMatchResult(onMatchResult);
 
   // 监听 WS 状态：动态切换轮询节奏
-  const offStatus = socketService.onStatusChange((s) => {
+  offStatus = socketService.onStatusChange((s) => {
     wsStatus.value = s;
-    // 状态变化时立即刷一次 + 切换轮询节奏
     if (s === 'open') {
-      // 重连成功：先做一次全量对账
       pollAll(false).then(() => switchPolling(true));
     } else if (s === 'closed') {
-      // 断线：进入全量兜底
       switchPolling(false);
     }
   });
 
-  // 启动：假设尚未连接，先全量兜底
   startPolling(false);
 });
 
@@ -518,19 +413,6 @@ onUnmounted(() => {
 .theme-toggle-icon {
   font-size: 16px;
   line-height: 1;
-}
-
-.fps-warning {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(255, 152, 0, 0.9);
-  color: white;
-  padding: 12px 24px;
-  border-radius: 8px;
-  z-index: 9999;
-  font-size: 16px;
 }
 
 .ws-status {
@@ -637,43 +519,5 @@ onUnmounted(() => {
 
 .not-found-btn:hover {
   opacity: 0.9;
-}
-
-/* ===== 场景切换过渡动画 ===== */
-.scene-forward-enter-active,
-.scene-forward-leave-active,
-.scene-backward-enter-active,
-.scene-backward-leave-active {
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  position: absolute;
-  inset: 0;
-}
-
-/* 前进：新场景从右侧滑入，旧场景向左淡出 */
-.scene-forward-enter-from {
-  opacity: 0;
-  transform: translateX(60px) scale(0.96);
-}
-.scene-forward-leave-to {
-  opacity: 0;
-  transform: translateX(-60px) scale(0.96);
-}
-
-/* 后退：新场景从左侧滑入，旧场景向右淡出 */
-.scene-backward-enter-from {
-  opacity: 0;
-  transform: translateX(-60px) scale(0.96);
-}
-.scene-backward-leave-to {
-  opacity: 0;
-  transform: translateX(60px) scale(0.96);
-}
-
-.scene-forward-enter-to,
-.scene-forward-leave-from,
-.scene-backward-enter-to,
-.scene-backward-leave-from {
-  opacity: 1;
-  transform: translateX(0) scale(1);
 }
 </style>

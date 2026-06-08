@@ -25,5 +25,7 @@ var WsEvent;
     WsEvent["MATCH_LINES"] = "MATCH_LINES";
     WsEvent["ICEBREAKER_ANSWERED"] = "ICEBREAKER_ANSWERED";
     WsEvent["LOTTERY_WON"] = "LOTTERY_WON";
+    WsEvent["STREAM_UPDATED"] = "STREAM_UPDATED";
+    WsEvent["SUGGESTIONS_UPDATED"] = "SUGGESTIONS_UPDATED";
 })(WsEvent || (exports.WsEvent = WsEvent = {}));
 //# sourceMappingURL=ws-event.enum.js.map

@@ -22,6 +22,7 @@ import { MatchService } from '../match/match.service';
 import { EventStatus } from '../../common/enums/event-status.enum';
 import { WsEvent } from '../../common/enums/ws-event.enum';
 import { APP_EVENTS } from '../../common/constants/app-events';
+import { ExperienceStreamService } from '../experience-stream/experience-stream.service';
 
 /**
  * 活动 WebSocket 网关
@@ -108,7 +109,15 @@ export class EventGateway
     private readonly matchService: MatchService,
     @InjectRepository(GlobalUser)
     private readonly userRepo: Repository<GlobalUser>,
-  ) {}
+    private readonly streamService: ExperienceStreamService,
+  ) {
+    // v2.0：订阅 stream 更新 → 广播 STREAM_UPDATED
+    this.streamService.subscribe((eventId, stream) => {
+      this.server
+        .to(`event:${eventId}`)
+        .emit(WsEvent.STREAM_UPDATED, stream);
+    });
+  }
 
   afterInit() {
     this.logger.log('EventGateway initialized');
@@ -308,11 +317,23 @@ export class EventGateway
   }
 
   @OnEvent(APP_EVENTS.SCENE_CHANGED, { async: true })
-  async handleSceneChanged(payload: { event_id: string; new_state: EventStatus }) {
-    this.broadcastSceneChange(payload.event_id, payload.new_state);
+  async handleSceneChanged(payload: {
+    event_id: string;
+    state: EventStatus;
+    previous_state?: EventStatus;
+    changed_by?: string;
+    at?: number;
+  }) {
+    // v2.0 兼容：取 state（新）或 new_state（旧）
+    const newState = payload.state;
+    if (!newState) {
+      this.logger.warn('SCENE_CHANGED payload missing state, skip');
+      return;
+    }
+    this.broadcastSceneChange(payload.event_id, newState);
 
     // 摇一摇会话：进入 GAME_SHAKE 时启动；离开时结束
-    if (payload.new_state === EventStatus.GAME_SHAKE) {
+    if (newState === EventStatus.GAME_SHAKE) {
       await this.setShakeActive(payload.event_id, true);
       this.startShakeSession(payload.event_id);
     } else {

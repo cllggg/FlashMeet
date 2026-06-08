@@ -14,6 +14,7 @@ const event_module_1 = require("../event/event.module");
 const global_user_entity_1 = require("../global-user/entities/global-user.entity");
 const icebreaker_module_1 = require("../icebreaker/icebreaker.module");
 const match_module_1 = require("../match/match.module");
+const experience_stream_module_1 = require("../experience-stream/experience-stream.module");
 let GatewayModule = class GatewayModule {
 };
 exports.GatewayModule = GatewayModule;
@@ -24,6 +25,7 @@ exports.GatewayModule = GatewayModule = __decorate([
             event_module_1.EventModule,
             icebreaker_module_1.IcebreakerModule,
             match_module_1.MatchModule,
+            experience_stream_module_1.ExperienceStreamModule,
         ],
         providers: [event_gateway_1.EventGateway],
         exports: [event_gateway_1.EventGateway],

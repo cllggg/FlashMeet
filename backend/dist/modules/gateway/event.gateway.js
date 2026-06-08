@@ -29,6 +29,7 @@ const match_service_1 = require("../match/match.service");
 const event_status_enum_1 = require("../../common/enums/event-status.enum");
 const ws_event_enum_1 = require("../../common/enums/ws-event.enum");
 const app_events_1 = require("../../common/constants/app-events");
+const experience_stream_service_1 = require("../experience-stream/experience-stream.service");
 let EventGateway = class EventGateway {
     static { EventGateway_1 = this; }
     redis;
@@ -37,6 +38,7 @@ let EventGateway = class EventGateway {
     icebreakerService;
     matchService;
     userRepo;
+    streamService;
     server;
     logger = new common_1.Logger(EventGateway_1.name);
     localShakeScores = new Map();
@@ -79,13 +81,19 @@ let EventGateway = class EventGateway {
     }
     userInfoCache = new Map();
     static USER_CACHE_TTL_MS = 60 * 60 * 1000;
-    constructor(redis, eventService, hostPresence, icebreakerService, matchService, userRepo) {
+    constructor(redis, eventService, hostPresence, icebreakerService, matchService, userRepo, streamService) {
         this.redis = redis;
         this.eventService = eventService;
         this.hostPresence = hostPresence;
         this.icebreakerService = icebreakerService;
         this.matchService = matchService;
         this.userRepo = userRepo;
+        this.streamService = streamService;
+        this.streamService.subscribe((eventId, stream) => {
+            this.server
+                .to(`event:${eventId}`)
+                .emit(ws_event_enum_1.WsEvent.STREAM_UPDATED, stream);
+        });
     }
     afterInit() {
         this.logger.log('EventGateway initialized');
@@ -211,8 +219,13 @@ let EventGateway = class EventGateway {
         }
     }
     async handleSceneChanged(payload) {
-        this.broadcastSceneChange(payload.event_id, payload.new_state);
-        if (payload.new_state === event_status_enum_1.EventStatus.GAME_SHAKE) {
+        const newState = payload.state;
+        if (!newState) {
+            this.logger.warn('SCENE_CHANGED payload missing state, skip');
+            return;
+        }
+        this.broadcastSceneChange(payload.event_id, newState);
+        if (newState === event_status_enum_1.EventStatus.GAME_SHAKE) {
             await this.setShakeActive(payload.event_id, true);
             this.startShakeSession(payload.event_id);
         }
@@ -683,6 +696,7 @@ exports.EventGateway = EventGateway = EventGateway_1 = __decorate([
         host_presence_service_1.HostPresenceService,
         icebreaker_service_1.IcebreakerService,
         match_service_1.MatchService,
-        typeorm_2.Repository])
+        typeorm_2.Repository,
+        experience_stream_service_1.ExperienceStreamService])
 ], EventGateway);
 //# sourceMappingURL=event.gateway.js.map

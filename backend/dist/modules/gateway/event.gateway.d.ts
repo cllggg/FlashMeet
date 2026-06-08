@@ -9,6 +9,7 @@ import { GlobalUser } from '../global-user/entities/global-user.entity';
 import { IcebreakerService } from '../icebreaker/icebreaker.service';
 import { MatchService } from '../match/match.service';
 import { EventStatus } from '../../common/enums/event-status.enum';
+import { ExperienceStreamService } from '../experience-stream/experience-stream.service';
 export declare class EventGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, OnModuleDestroy {
     private readonly redis;
     private readonly eventService;
@@ -16,6 +17,7 @@ export declare class EventGateway implements OnGatewayInit, OnGatewayConnection,
     private readonly icebreakerService;
     private readonly matchService;
     private readonly userRepo;
+    private readonly streamService;
     server: Server;
     private readonly logger;
     private localShakeScores;
@@ -31,7 +33,7 @@ export declare class EventGateway implements OnGatewayInit, OnGatewayConnection,
     private isShakeActive;
     private userInfoCache;
     private static readonly USER_CACHE_TTL_MS;
-    constructor(redis: Redis, eventService: EventService, hostPresence: HostPresenceService, icebreakerService: IcebreakerService, matchService: MatchService, userRepo: Repository<GlobalUser>);
+    constructor(redis: Redis, eventService: EventService, hostPresence: HostPresenceService, icebreakerService: IcebreakerService, matchService: MatchService, userRepo: Repository<GlobalUser>, streamService: ExperienceStreamService);
     afterInit(): void;
     private gcShakeBuckets;
     onModuleDestroy(): void;
@@ -77,7 +79,10 @@ export declare class EventGateway implements OnGatewayInit, OnGatewayConnection,
     }): void;
     handleSceneChanged(payload: {
         event_id: string;
-        new_state: EventStatus;
+        state: EventStatus;
+        previous_state?: EventStatus;
+        changed_by?: string;
+        at?: number;
     }): Promise<void>;
     handleShakeUpdated(payload: {
         event_id: string;

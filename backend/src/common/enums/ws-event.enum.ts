@@ -29,4 +29,10 @@ export enum WsEvent {
   // 用户自己作答后收到，可用于震动/动效反馈
   ICEBREAKER_ANSWERED = 'ICEBREAKER_ANSWERED',
   LOTTERY_WON = 'LOTTERY_WON',
+
+  // v2.0 体验流（Experience Stream）
+  // 一次推送携带完整 stream（current + queue + history + suggestions）
+  // 前端用一次 update 替代多次 WS 事件处理
+  STREAM_UPDATED = 'STREAM_UPDATED',
+  SUGGESTIONS_UPDATED = 'SUGGESTIONS_UPDATED',
 }

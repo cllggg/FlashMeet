@@ -145,7 +145,7 @@ npm run dev -- --port 5180 # 监听 0.0.0.0:5180
 
 启动成功后：
 - 大屏端：访问 `http://<LAN_IP>:5173`
-- 手机扫码：自动进入 `http://<LAN_IP>:5174/#/pages/user/checkin?event_id=xxx`
+- 手机扫码：自动进入 `http://<LAN_IP>:5174/#/pages/live/index?eventId=xxx`（v3.0 极简：扫码直达 Live 容器，0 页面跳转）
 - 官网：访问 `http://<LAN_IP>:5180`
 
 ### 2. 生产环境

@@ -123,6 +123,7 @@ export class EventService {
       }
 
       // Update DB
+      const previousState = event.current_state;
       event.current_state = targetState;
       await this.eventRepo.save(event);
 
@@ -132,7 +133,10 @@ export class EventService {
       // 抛事件，Gateway 监听后广播
       this.emitter.emit(APP_EVENTS.SCENE_CHANGED, {
         event_id: eventId,
-        new_state: targetState,
+        state: targetState,
+        previous_state: previousState,
+        changed_by: userId,
+        at: Date.now(),
       });
 
       return targetState;

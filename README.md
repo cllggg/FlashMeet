@@ -431,4 +431,4 @@ npm run generate            # 静态站产物在 .output/public/
 
 - 项目当前阶段：**内测版**
 - 开发者：[liyijia]
-- 微信：【cllggg】
+- 合作微信：【cllggg】

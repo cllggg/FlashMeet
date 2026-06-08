@@ -42,6 +42,9 @@ export class LotteryRecord {
   @Column({ nullable: true })
   prize_image_url: string;
 
+  @Column({ type: 'int', default: 0 })
+  prize_value: number;
+
   @CreateDateColumn()
   won_at: Date;
 }

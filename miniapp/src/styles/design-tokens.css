@@ -1,0 +1,248 @@
+/* ============================================================
+ * FlashMeet MiniApp · Design Tokens
+ * 统一的设计变量：颜色、字号、间距、圆角、阴影、动效曲线
+ * 在所有页面 <style> 中通过 @import 引入
+ * ========================================================== */
+
+/* ---------- 品牌主色（与全场一致） ---------- */
+:root {
+  /* 品牌渐变（主操作 / 主要按钮） */
+  --fm-gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --fm-gradient-warm: linear-gradient(135deg, #ffd700 0%, #ff6b6b 100%);
+  --fm-gradient-cool: linear-gradient(135deg, #4ecdc4 0%, #45b7d1 100%);
+  --fm-gradient-success: linear-gradient(135deg, #4fc3f7 0%, #66bb6a 100%);
+
+  /* 强调色 */
+  --fm-color-primary: #667eea;
+  --fm-color-primary-deep: #5566d4;
+  --fm-color-gold: #ffd700;
+  --fm-color-red: #ff6b6b;
+  --fm-color-cyan: #4ecdc4;
+  --fm-color-blue: #4fc3f7;
+  --fm-color-green: #66bb6a;
+
+  /* 文字 */
+  --fm-text-primary: #ffffff;
+  --fm-text-secondary: rgba(255, 255, 255, 0.65);
+  --fm-text-tertiary: rgba(255, 255, 255, 0.45);
+  --fm-text-quaternary: rgba(255, 255, 255, 0.3);
+  --fm-text-disabled: rgba(255, 255, 255, 0.25);
+  --fm-text-on-gold: #0a0a2e;
+
+  /* 背景 */
+  --fm-bg-page-start: #0a0a2e;
+  --fm-bg-page-end: #1a1a4e;
+  --fm-bg-glass-1: rgba(255, 255, 255, 0.04);
+  --fm-bg-glass-2: rgba(255, 255, 255, 0.06);
+  --fm-bg-glass-3: rgba(255, 255, 255, 0.08);
+  --fm-bg-glass-hover: rgba(255, 255, 255, 0.12);
+  --fm-bg-overlay: rgba(0, 0, 0, 0.6);
+  --fm-bg-input: rgba(255, 255, 255, 0.08);
+
+  /* 边框 */
+  --fm-border-soft: 1rpx solid rgba(255, 255, 255, 0.08);
+  --fm-border-base: 1rpx solid rgba(255, 255, 255, 0.12);
+  --fm-border-strong: 1rpx solid rgba(255, 255, 255, 0.2);
+  --fm-border-dashed: 1rpx dashed rgba(255, 255, 255, 0.2);
+
+  /* 圆角 */
+  --fm-radius-sm: 8rpx;
+  --fm-radius-base: 16rpx;
+  --fm-radius-md: 20rpx;
+  --fm-radius-lg: 24rpx;
+  --fm-radius-xl: 32rpx;
+  --fm-radius-pill: 999rpx;
+
+  /* 字号阶梯（统一类型尺度） */
+  --fm-fs-display: 60rpx;   /* 数字大屏主标题 */
+  --fm-fs-h1: 48rpx;        /* 页面主标题 */
+  --fm-fs-h2: 40rpx;        /* 区域标题 */
+  --fm-fs-h3: 34rpx;        /* 卡片标题 */
+  --fm-fs-xl: 32rpx;        /* 强调文本 */
+  --fm-fs-lg: 30rpx;        /* 大按钮 / 大字段 */
+  --fm-fs-md: 28rpx;        /* 默认文本 */
+  --fm-fs-sm: 26rpx;        /* 次要文本 */
+  --fm-fs-xs: 24rpx;        /* 辅助 / 提示 */
+  --fm-fs-xxs: 22rpx;       /* 标签 / 角标 */
+
+  /* 字重 */
+  --fm-fw-bold: 700;
+  --fm-fw-semi: 600;
+  --fm-fw-medium: 500;
+  --fm-fw-regular: 400;
+
+  /* 间距阶梯 */
+  --fm-sp-1: 4rpx;
+  --fm-sp-2: 8rpx;
+  --fm-sp-3: 12rpx;
+  --fm-sp-4: 16rpx;
+  --fm-sp-5: 20rpx;
+  --fm-sp-6: 24rpx;
+  --fm-sp-8: 32rpx;
+  --fm-sp-10: 40rpx;
+  --fm-sp-12: 48rpx;
+  --fm-sp-15: 60rpx;
+  --fm-sp-20: 80rpx;
+
+  /* 阴影 / 辉光 */
+  --fm-shadow-sm: 0 4rpx 12rpx rgba(0, 0, 0, 0.25);
+  --fm-shadow-md: 0 8rpx 24rpx rgba(0, 0, 0, 0.35);
+  --fm-shadow-lg: 0 16rpx 48rpx rgba(0, 0, 0, 0.4);
+  --fm-glow-gold: 0 0 20rpx rgba(255, 215, 0, 0.4);
+  --fm-glow-red: 0 0 24rpx rgba(255, 107, 107, 0.5);
+  --fm-glow-primary: 0 0 24rpx rgba(102, 126, 234, 0.4);
+
+  /* 动效曲线 */
+  --fm-ease-out: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --fm-ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --fm-dur-fast: 0.15s;
+  --fm-dur-base: 0.25s;
+  --fm-dur-slow: 0.4s;
+
+  /* 数字字符等宽（避免抖动） */
+  --fm-num: 'font-variant-numeric: tabular-nums; font-feature-settings: "tnum";';
+}
+
+/* ---------- 全局基础样式（在 App.vue / page 中复用） ---------- */
+.fm-page {
+  min-height: 100vh;
+  padding: var(--fm-sp-15) var(--fm-sp-10);
+  padding-bottom: calc(var(--fm-sp-15) + env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, var(--fm-bg-page-start) 0%, var(--fm-bg-page-end) 100%);
+  color: var(--fm-text-primary);
+  font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont,
+    'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.fm-text {
+  color: var(--fm-text-primary);
+}
+.fm-text-secondary { color: var(--fm-text-secondary); }
+.fm-text-tertiary { color: var(--fm-text-tertiary); }
+.fm-text-gold { color: var(--fm-color-gold); }
+.fm-text-red { color: var(--fm-color-red); }
+.fm-text-primary { color: var(--fm-color-primary); }
+
+.fm-num { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum'; }
+
+/* 玻璃卡片基础 */
+.fm-glass {
+  background: var(--fm-bg-glass-2);
+  border: var(--fm-border-base);
+  border-radius: var(--fm-radius-lg);
+}
+
+/* 通用渐变标题 */
+.fm-gradient-title {
+  font-weight: var(--fm-fw-bold);
+  background: var(--fm-gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 通用点击反馈 */
+.fm-press {
+  transition: transform var(--fm-dur-fast) var(--fm-ease-smooth),
+    opacity var(--fm-dur-fast) var(--fm-ease-smooth);
+}
+.fm-press:active {
+  transform: scale(0.96);
+  opacity: 0.85;
+}
+
+/* 通用按钮（替换所有 button 自定义渐变样式） */
+.fm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 88rpx;
+  padding: 0 var(--fm-sp-10);
+  border: none;
+  border-radius: var(--fm-radius-pill);
+  background: var(--fm-gradient-primary);
+  color: var(--fm-text-primary);
+  font-size: var(--fm-fs-md);
+  font-weight: var(--fm-fw-bold);
+  transition: transform var(--fm-dur-fast) var(--fm-ease-smooth),
+    opacity var(--fm-dur-fast) var(--fm-ease-smooth);
+}
+.fm-btn::after { border: none; }
+.fm-btn:active { transform: scale(0.97); opacity: 0.9; }
+.fm-btn[disabled],
+.fm-btn.disabled { opacity: 0.4; pointer-events: none; }
+.fm-btn-warm { background: var(--fm-gradient-warm); color: var(--fm-text-on-gold); }
+.fm-btn-glass {
+  background: var(--fm-bg-glass-3);
+  border: var(--fm-border-base);
+  color: var(--fm-text-primary);
+}
+.fm-btn-sm {
+  height: 60rpx;
+  padding: 0 var(--fm-sp-5);
+  font-size: var(--fm-fs-sm);
+  border-radius: var(--fm-radius-pill);
+}
+.fm-btn-block { width: 100%; }
+
+/* 通用输入框 */
+.fm-input {
+  background: var(--fm-bg-input);
+  border: var(--fm-border-base);
+  border-radius: var(--fm-radius-base);
+  padding: var(--fm-sp-5) var(--fm-sp-6);
+  color: var(--fm-text-primary);
+  font-size: var(--fm-fs-md);
+}
+
+/* 页面通用间距 */
+.fm-section { margin-bottom: var(--fm-sp-10); }
+.fm-section-title {
+  display: block;
+  font-size: var(--fm-fs-md);
+  font-weight: var(--fm-fw-semi);
+  color: var(--fm-text-secondary);
+  margin-bottom: var(--fm-sp-5);
+}
+
+/* ============================================================
+ * 全局修复：uni-app H5 端 <uni-input> 容器被强制 height:1.4em + overflow:hidden
+ * 导致内部 input 被压扁，padding 溢出被切，用户点击命中失败。
+ * 解决：覆盖容器限制，并直接为真实 input 元素 (.uni-input-input) 应用样式。
+ * ========================================================== */
+uni-input,
+uni-textarea {
+  display: block;
+  font-size: inherit;
+  line-height: inherit;
+}
+uni-input {
+  height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+uni-input .uni-input-wrapper,
+uni-input .uni-input-input {
+  height: auto !important;
+  min-height: 1.6em;
+  display: block;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  caret-color: white;
+  pointer-events: auto !important;
+  -webkit-user-select: text !important;
+  user-select: text !important;
+}
+
+uni-input .uni-input-placeholder {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: inherit;
+  pointer-events: none;
+  z-index: 1;
+}

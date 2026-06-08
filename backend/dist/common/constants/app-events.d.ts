@@ -1,0 +1,20 @@
+export declare const APP_EVENTS: {
+    readonly CHECKIN_CREATED: "checkin.created";
+    readonly CHECKIN_UPDATED: "checkin.updated";
+    readonly LOTTERY_DRAWN: "lottery.drawn";
+    readonly LOTTERY_POOL_CREATED: "lottery.pool.created";
+    readonly SHAKE_UPDATED: "shake.updated";
+    readonly SHAKE_STARTED: "shake.started";
+    readonly SHAKE_ENDED: "shake.ended";
+    readonly SCENE_CHANGED: "scene.changed";
+    readonly ICEBREAKER_PUBLISHED: "icebreaker.published";
+    readonly ICEBREAKER_ANSWERED: "icebreaker.answered";
+    readonly ICEBREAKER_CLOSED: "icebreaker.closed";
+    readonly HOST_HEARTBEAT: "host.heartbeat";
+    readonly HOST_OFFLINE: "host.offline";
+    readonly HOST_PROMOTED: "host.promoted";
+    readonly MATCH_GENERATED: "match.generated";
+    readonly MATCH_ACCEPTED: "match.accepted";
+    readonly MATCH_REJECTED: "match.rejected";
+    readonly MATCH_BLIND_CHAT: "match.blind_chat";
+};

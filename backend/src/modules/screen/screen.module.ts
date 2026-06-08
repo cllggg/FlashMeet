@@ -4,9 +4,10 @@ import { ScreenController } from './screen.controller';
 import { Event } from '../event/entities/event.entity';
 import { CheckIn } from '../checkin/entities/checkin.entity';
 import { LotteryRecord } from '../lottery/entities/lottery-record.entity';
+import { GatewayModule } from '../gateway/gateway.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Event, CheckIn, LotteryRecord])],
+  imports: [TypeOrmModule.forFeature([Event, CheckIn, LotteryRecord]), GatewayModule],
   controllers: [ScreenController],
 })
 export class ScreenModule {}

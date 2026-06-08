@@ -16,6 +16,7 @@ class PrizeItemDto {
     name;
     total_count;
     image_url;
+    value;
 }
 __decorate([
     (0, class_validator_1.IsString)(),
@@ -30,6 +31,11 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], PrizeItemDto.prototype, "image_url", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], PrizeItemDto.prototype, "value", void 0);
 class CreateLotteryPoolDto {
     event_id;
     name;

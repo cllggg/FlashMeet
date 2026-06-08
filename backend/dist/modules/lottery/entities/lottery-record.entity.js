@@ -24,6 +24,7 @@ let LotteryRecord = class LotteryRecord {
     pool;
     prize_name;
     prize_image_url;
+    prize_value;
     won_at;
 };
 exports.LotteryRecord = LotteryRecord;
@@ -66,6 +67,10 @@ __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], LotteryRecord.prototype, "prize_image_url", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'int', default: 0 }),
+    __metadata("design:type", Number)
+], LotteryRecord.prototype, "prize_value", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)

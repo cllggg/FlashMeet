@@ -2,13 +2,18 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Event } from './entities/event.entity';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { EventStatus } from '../../common/enums/event-status.enum';
+import { isTransitionAllowed } from '../../common/enums/state-transitions';
+import { APP_EVENTS } from '../../common/constants/app-events';
+import { HostPresenceService } from './host-presence.service';
 import { Redis } from 'ioredis';
 import { Inject } from '@nestjs/common';
 
@@ -22,6 +27,8 @@ export class EventService {
     private readonly eventRepo: Repository<Event>,
     @Inject('REDIS_CLIENT')
     private readonly redis: Redis,
+    private readonly emitter: EventEmitter2,
+    private readonly hostPresence: HostPresenceService,
   ) {}
 
   async create(hostId: string, dto: CreateEventDto): Promise<Event> {
@@ -38,6 +45,9 @@ export class EventService {
       EVENT_STATE_KEY(saved.event_id),
       EventStatus.STANDBY,
     );
+
+    // Register primary host
+    await this.hostPresence.setPrimary(saved.event_id, hostId);
 
     return saved;
   }
@@ -90,19 +100,53 @@ export class EventService {
     targetState: EventStatus,
     userId: string,
   ): Promise<EventStatus> {
-    const event = await this.findOne(eventId);
-    if (event.host_id !== userId && !event.co_host_ids.includes(userId)) {
-      throw new ForbiddenException('Only host or co-host can change scene');
+    // 分布式锁：防止多 co-host 同时切换导致状态竞态
+    const lockKey = `event:${eventId}:change_scene:lock`;
+    const lock = await this.redis.set(lockKey, userId, 'PX', 3000, 'NX');
+    if (!lock) {
+      throw new BadRequestException(
+        'Another host is changing the scene, please wait.',
+      );
     }
 
-    // Update DB
-    event.current_state = targetState;
-    await this.eventRepo.save(event);
+    try {
+      const event = await this.findOne(eventId);
+      if (event.host_id !== userId && !event.co_host_ids.includes(userId)) {
+        throw new ForbiddenException('Only host or co-host can change scene');
+      }
 
-    // Update Redis
-    await this.redis.set(EVENT_STATE_KEY(eventId), targetState);
+      // 状态机校验：拒绝非法跳转
+      if (!isTransitionAllowed(event.current_state, targetState)) {
+        throw new BadRequestException(
+          `Illegal state transition: ${event.current_state} -> ${targetState}`,
+        );
+      }
 
-    return targetState;
+      // Update DB
+      event.current_state = targetState;
+      await this.eventRepo.save(event);
+
+      // Update Redis
+      await this.redis.set(EVENT_STATE_KEY(eventId), targetState);
+
+      // 抛事件，Gateway 监听后广播
+      this.emitter.emit(APP_EVENTS.SCENE_CHANGED, {
+        event_id: eventId,
+        new_state: targetState,
+      });
+
+      return targetState;
+    } finally {
+      // 原子释放锁：仅当锁值匹配时才删除（Lua 脚本保证原子性）
+      try {
+        await this.redis.eval(
+          "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end",
+          1,
+          lockKey,
+          userId,
+        );
+      } catch {}
+    }
   }
 
   async findByHost(hostId: string): Promise<Event[]> {

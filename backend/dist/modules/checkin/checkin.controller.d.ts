@@ -1,21 +1,20 @@
 import { CheckinService } from './checkin.service';
-import { EventGateway } from '../gateway/event.gateway';
 import { CheckInDto } from './dto/checkin.dto';
 export declare class CheckinController {
     private readonly checkinService;
-    private readonly gateway;
-    constructor(checkinService: CheckinService, gateway: EventGateway);
-    guestCheckIn(dto: CheckInDto): Promise<{
+    constructor(checkinService: CheckinService);
+    guestCheckIn(dto: CheckInDto, deviceToken?: string): Promise<{
         checkin: import("./entities/checkin.entity").CheckIn;
-        user: {
-            user_id: string;
-            nickname: string;
-            avatar_url: string;
-            phone: string;
-        };
+        user: import("../global-user/entities/global-user.entity").GlobalUser;
         isNew: boolean;
+        recall_key: string;
     }>;
     checkIn(req: any, dto: CheckInDto): Promise<import("./entities/checkin.entity").CheckIn>;
+    resolve(body: {
+        event_id: string;
+        user_token?: string;
+        phone?: string;
+    }, deviceToken?: string, userTokenHeader?: string): Promise<import("./checkin.service").ResolveResult>;
     getCheckins(eventId: string): Promise<import("./entities/checkin.entity").CheckIn[]>;
     getCheckinCount(eventId: string): Promise<{
         count: number;

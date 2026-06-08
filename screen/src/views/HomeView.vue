@@ -9,16 +9,27 @@
         <input
           v-model="eventId"
           class="event-input"
+          :class="{ 'event-input--error': errorMsg }"
           placeholder="粘贴 event_id..."
+          maxlength="64"
           @keyup.enter="goToEvent"
+          @input="onInput"
         />
-        <button class="go-btn" @click="goToEvent" :disabled="!eventId.trim()">
-          进入聚会
+        <div v-if="errorMsg" class="error-tip">
+          <span class="error-icon">⚠️</span>
+          <span>{{ errorMsg }}</span>
+        </div>
+        <button
+          class="go-btn"
+          @click="goToEvent"
+          :disabled="!eventId.trim() || checking"
+        >
+          {{ checking ? '正在进入…' : '进入聚会' }}
         </button>
       </div>
 
       <div class="hint">
-        创建聚会后，在小程序"H5端”中可以获取 event_id
+        创建聚会后，在小程序「H5 端」中可以获取 event_id
       </div>
     </div>
   </div>
@@ -27,14 +38,52 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import api from '../services/api';
 
 const router = useRouter();
 const eventId = ref('');
+const errorMsg = ref('');
+const checking = ref(false);
 
-const goToEvent = () => {
+/** event_id 基本格式：字母/数字/_/-，6~64 位 */
+const isValidId = (id: string) => /^[A-Za-z0-9_-]{6,64}$/.test(id);
+
+const onInput = () => {
+  if (errorMsg.value) errorMsg.value = '';
+};
+
+const goToEvent = async () => {
   const id = eventId.value.trim();
-  if (!id) return;
-  router.push(`/e/${id}`);
+  if (!id) {
+    errorMsg.value = '请输入聚会 ID';
+    return;
+  }
+  if (!isValidId(id)) {
+    errorMsg.value = 'ID 格式有误，应为 6~64 位字母/数字/-/_';
+    return;
+  }
+  // 轻量预检：避免直接跳到 404 页面提升体验
+  checking.value = true;
+  errorMsg.value = '';
+  try {
+    const { data } = await api.get(`/screen/event/${id}`);
+    if (!data) {
+      errorMsg.value = '活动不存在或已结束';
+      return;
+    }
+    router.push(`/e/${id}`);
+  } catch (err: any) {
+    const status = err?.response?.status;
+    if (status === 404) {
+      errorMsg.value = '活动不存在或已结束';
+    } else if (status === 0 || !status) {
+      errorMsg.value = '网络异常，请检查连接后重试';
+    } else {
+      errorMsg.value = '进入失败，请稍后再试';
+    }
+  } finally {
+    checking.value = false;
+  }
 };
 </script>
 
@@ -103,8 +152,36 @@ const goToEvent = () => {
   border-color: #667eea;
 }
 
+.event-input--error {
+  border-color: #ff6b6b;
+  box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.15);
+}
+
 .event-input::placeholder {
   color: rgba(255, 255, 255, 0.25);
+}
+
+.error-tip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-align: left;
+  font-size: 0.85rem;
+  color: #ff6b6b;
+  margin: -8px 0 14px 4px;
+  animation: error-shake 0.32s ease-in-out;
+}
+
+.error-icon {
+  font-size: 1rem;
+}
+
+@keyframes error-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(2px); }
 }
 
 .go-btn {

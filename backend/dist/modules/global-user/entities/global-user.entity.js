@@ -14,6 +14,8 @@ const typeorm_1 = require("typeorm");
 let GlobalUser = class GlobalUser {
     user_id;
     wechat_openid;
+    device_id;
+    user_token;
     nickname;
     phone;
     avatar_url;
@@ -32,6 +34,14 @@ __decorate([
     (0, typeorm_1.Column)({ unique: true }),
     __metadata("design:type", String)
 ], GlobalUser.prototype, "wechat_openid", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true, unique: true }),
+    __metadata("design:type", String)
+], GlobalUser.prototype, "device_id", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true, unique: true, length: 80 }),
+    __metadata("design:type", String)
+], GlobalUser.prototype, "user_token", void 0);
 __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)

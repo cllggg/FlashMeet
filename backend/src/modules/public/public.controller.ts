@@ -101,6 +101,11 @@ export class PublicController {
     #avatarFileInput { display: none; }
     .avatar-switch { font-size: 12px; color: rgba(255,255,255,0.35); cursor: pointer; margin-top: 8px; }
     .avatar-switch:hover { color: rgba(255,255,255,0.6); }
+    .display-id { font-size: 20px; font-weight: bold; color: #ffd700; letter-spacing: 0.2em; }
+    .state-badge { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 12px; margin-bottom: 10px; }
+    .state-badge.checkin { background: rgba(102,126,234,0.2); color: #667eea; }
+    .state-badge.ended { background: rgba(255,112,67,0.2); color: #ff7043; }
+    .state-badge.standby { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); }
   </style>
 </head>
 <body>
@@ -108,6 +113,7 @@ export class PublicController {
     <div class="logo">聚闪耀</div>
     <div class="title">${escapeHtml(title)}</div>
     <div class="subtitle">${location ? escapeHtml(location) + ' · ' : ''}输入信息签到上墙</div>
+    <div class="state-badge checkin" id="stateBadge">签到进行中</div>
 
     <!-- Avatar preview -->
     <div class="avatar-preview" id="avatarPreview">?</div>
@@ -143,7 +149,30 @@ export class PublicController {
   </div>
   <script>
     const eventId = '${escapeJs(eventId)}';
+    const eventState = '${escapeJs(state)}';
     let avatarBase64 = '';
+
+    // 预填缓存的姓名
+    (function() {
+      try {
+        const cached = localStorage.getItem('fm_name');
+        if (cached) document.getElementById('nameInput').value = cached;
+      } catch(e) {}
+      // 更新状态徽章
+      const badge = document.getElementById('stateBadge');
+      if (eventState === 'STATUS_CHECKIN') {
+        badge.className = 'state-badge checkin';
+        badge.textContent = '签到进行中';
+      } else if (eventState === 'STATUS_ENDED') {
+        badge.className = 'state-badge ended';
+        badge.textContent = '活动已结束';
+      } else {
+        badge.className = 'state-badge standby';
+        badge.textContent = '签到未开始';
+        document.getElementById('checkinBtn').style.opacity = '0.4';
+        document.getElementById('checkinBtn').style.pointerEvents = 'none';
+      }
+    })();
 
     function onAvatarFilePicked(input) {
       const file = input.files[0];
@@ -225,6 +254,9 @@ export class PublicController {
       const phone = document.getElementById('phoneInput').value.trim();
       const avatarUrl = avatarBase64 || document.getElementById('avatarInput').value.trim();
 
+      // 缓存姓名到 localStorage
+      try { localStorage.setItem('fm_name', name); } catch(e) {}
+
       btn.disabled = true;
       btn.textContent = '签到中...';
 
@@ -240,16 +272,23 @@ export class PublicController {
 
         if (resp.ok) {
           if (data.isNew) {
-            result.innerHTML = '<div class="success-msg">签到成功！<br>你的头像已飞入大屏</div>';
+            const displayId = data.checkin?.display_id || '';
+            result.innerHTML = '<div class="success-msg">签到成功！<br>你的专属编号：<span class="display-id">' + (displayId || '—') + '</span><br>头像已飞入大屏</div>';
             btn.textContent = '已签到';
             btn.style.background = 'rgba(102,126,234,0.3)';
           } else {
-            result.innerHTML = '<div class="already-msg">你已经签到过了，<br>无需重复签到</div>';
+            const existingDisplayId = data.checkin?.display_id || '';
+            result.innerHTML = '<div class="already-msg">你已经签到过了<br>你的编号：<span class="display-id">' + (existingDisplayId || '—') + '</span></div>';
             btn.textContent = '已签到';
             btn.style.background = 'rgba(255,183,77,0.2)';
           }
         } else {
-          throw new Error(data.message || '签到失败');
+          const msg = data.message || '签到失败';
+          if (msg.includes('已关闭') || msg.includes('STATUS_')) {
+            result.innerHTML = '<div style="color:#ff7043;margin-top:16px;font-size:14px;padding:14px;background:rgba(255,112,67,0.1);border-radius:12px;">签到已关闭<br>当前活动状态：' + msg.replace('签到已关闭，当前活动状态为 ', '') + '</div>';
+          } else {
+            throw new Error(msg);
+          }
         }
       } catch (e) {
         result.innerHTML = '<div style="color:#ff7043;margin-top:16px;font-size:14px;">' + (e.message || '签到失败，请重试') + '</div>';

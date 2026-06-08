@@ -1,0 +1,1 @@
+{"version":3,"file":"user-token.js","sourceRoot":"","sources":["../../../src/common/utils/user-token.ts"],"names":[],"mappings":";;AAQA,8CAOC;AAfD,mCAAqC;AAQrC,SAAgB,iBAAiB;IAE/B,OAAO,IAAA,oBAAW,EAAC,EAAE,CAAC;SACnB,QAAQ,CAAC,QAAQ,CAAC;SAClB,OAAO,CAAC,KAAK,EAAE,GAAG,CAAC;SACnB,OAAO,CAAC,KAAK,EAAE,GAAG,CAAC;SACnB,OAAO,CAAC,KAAK,EAAE,EAAE,CAAC,CAAC;AACxB,CAAC"}

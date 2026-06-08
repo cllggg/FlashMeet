@@ -16,35 +16,56 @@ exports.LotteryController = void 0;
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
 const lottery_service_1 = require("./lottery.service");
-const event_gateway_1 = require("../gateway/event.gateway");
 const create_lottery_pool_dto_1 = require("./dto/create-lottery-pool.dto");
 const draw_lottery_dto_1 = require("./dto/draw-lottery.dto");
 let LotteryController = class LotteryController {
     lotteryService;
-    gateway;
-    constructor(lotteryService, gateway) {
+    constructor(lotteryService) {
         this.lotteryService = lotteryService;
-        this.gateway = gateway;
     }
     async createPool(dto) {
         return this.lotteryService.createPool(dto);
     }
     async draw(req, dto) {
-        const result = await this.lotteryService.draw(req.user.userId, dto);
-        if (result) {
-            this.gateway.announceLotteryWinner(dto.event_id, {
-                id: result.id,
-                user: { user_id: result.user_id, nickname: '幸运儿' },
-                prize_name: result.prize_name,
-            });
+        if (dto.count && dto.count > 1) {
+            return this.lotteryService.drawBatch(req.user.userId, dto);
         }
-        return result;
+        return this.lotteryService.draw(req.user.userId, dto);
     }
     async getPools(eventId) {
         return this.lotteryService.getPools(eventId);
     }
     async getWinners(eventId, poolId) {
         return this.lotteryService.getWinners(eventId, poolId);
+    }
+    async exportWinnersCsv(eventId, poolId, res) {
+        const winners = await this.lotteryService.getWinnersForExport(eventId, poolId);
+        const escape = (s) => {
+            const v = (s ?? '').toString();
+            if (/[",\r\n]/.test(v))
+                return `"${v.replace(/"/g, '""')}"`;
+            return v;
+        };
+        const lines = ['抽奖时间,DisplayID,昵称,奖品,奖品价值(元),手机号'];
+        for (const w of winners) {
+            const phone = (w.user?.phone || '').toString();
+            const masked = phone
+                ? phone.replace(/^(\d{3})\d{4}(\d+)$/, '$1****$2')
+                : '';
+            lines.push([
+                new Date(w.won_at).toISOString(),
+                w.display_id || '',
+                w.user?.nickname || '',
+                w.prize_name || '',
+                w.prize_value ?? 0,
+                masked,
+            ]
+                .map(escape)
+                .join(','));
+        }
+        const body = '\uFEFF' + lines.join('\r\n');
+        res.setHeader('Content-Disposition', `attachment; filename="winners_${eventId}.csv"`);
+        res.send(body);
     }
 };
 exports.LotteryController = LotteryController;
@@ -78,11 +99,19 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], LotteryController.prototype, "getWinners", null);
+__decorate([
+    (0, common_1.Get)(':event_id/winners/export.csv'),
+    (0, common_1.Header)('Content-Type', 'text/csv; charset=utf-8'),
+    __param(0, (0, common_1.Param)('event_id')),
+    __param(1, (0, common_1.Query)('pool_id')),
+    __param(2, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object, Object]),
+    __metadata("design:returntype", Promise)
+], LotteryController.prototype, "exportWinnersCsv", null);
 exports.LotteryController = LotteryController = __decorate([
     (0, common_1.Controller)('lottery'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
-    __param(1, (0, common_1.Inject)((0, common_1.forwardRef)(() => event_gateway_1.EventGateway))),
-    __metadata("design:paramtypes", [lottery_service_1.LotteryService,
-        event_gateway_1.EventGateway])
+    __metadata("design:paramtypes", [lottery_service_1.LotteryService])
 ], LotteryController);
 //# sourceMappingURL=lottery.controller.js.map

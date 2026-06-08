@@ -39,4 +39,10 @@ export interface PrizeItem {
   total_count: number;
   remaining_count: number;
   image_url?: string;
+  /**
+   * 奖品价值（用于前端分档：大奖/普通）
+   *  - >= 100: 大奖（特殊动效）
+   *  - 其余：普通
+   */
+  value?: number;
 }

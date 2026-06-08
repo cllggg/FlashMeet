@@ -1,4 +1,5 @@
 import { Repository } from 'typeorm';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Redis } from 'ioredis';
 import { LotteryPool } from './entities/lottery-pool.entity';
 import { LotteryRecord } from './entities/lottery-record.entity';
@@ -12,9 +13,18 @@ export declare class LotteryService {
     private readonly checkinRepo;
     private readonly eventRepo;
     private readonly redis;
-    constructor(poolRepo: Repository<LotteryPool>, recordRepo: Repository<LotteryRecord>, checkinRepo: Repository<CheckIn>, eventRepo: Repository<Event>, redis: Redis);
+    private readonly emitter;
+    private readonly logger;
+    constructor(poolRepo: Repository<LotteryPool>, recordRepo: Repository<LotteryRecord>, checkinRepo: Repository<CheckIn>, eventRepo: Repository<Event>, redis: Redis, emitter: EventEmitter2);
     createPool(dto: CreateLotteryPoolDto): Promise<LotteryPool>;
-    draw(userId: string, dto: DrawLotteryDto): Promise<LotteryRecord | null>;
+    draw(operatorUserId: string, dto: DrawLotteryDto): Promise<LotteryRecord | null>;
+    drawBatch(operatorUserId: string, dto: DrawLotteryDto): Promise<LotteryRecord[]>;
+    private drawOne;
+    private deductStock;
     getWinners(eventId: string, poolId?: string): Promise<LotteryRecord[]>;
+    getWinnersForExport(eventId: string, poolId?: string): Promise<(LotteryRecord & {
+        display_id?: string | null;
+        phone?: string;
+    })[]>;
     getPools(eventId: string): Promise<LotteryPool[]>;
 }

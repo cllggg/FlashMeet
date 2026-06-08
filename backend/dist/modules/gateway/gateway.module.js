@@ -8,14 +8,23 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GatewayModule = void 0;
 const common_1 = require("@nestjs/common");
+const typeorm_1 = require("@nestjs/typeorm");
 const event_gateway_1 = require("./event.gateway");
 const event_module_1 = require("../event/event.module");
+const global_user_entity_1 = require("../global-user/entities/global-user.entity");
+const icebreaker_module_1 = require("../icebreaker/icebreaker.module");
+const match_module_1 = require("../match/match.module");
 let GatewayModule = class GatewayModule {
 };
 exports.GatewayModule = GatewayModule;
 exports.GatewayModule = GatewayModule = __decorate([
     (0, common_1.Module)({
-        imports: [(0, common_1.forwardRef)(() => event_module_1.EventModule)],
+        imports: [
+            typeorm_1.TypeOrmModule.forFeature([global_user_entity_1.GlobalUser]),
+            event_module_1.EventModule,
+            icebreaker_module_1.IcebreakerModule,
+            match_module_1.MatchModule,
+        ],
         providers: [event_gateway_1.EventGateway],
         exports: [event_gateway_1.EventGateway],
     })

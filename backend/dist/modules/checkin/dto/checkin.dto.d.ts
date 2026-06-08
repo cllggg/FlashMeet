@@ -5,4 +5,6 @@ export declare class CheckInDto {
     avatar_url?: string;
     local_tags?: string[];
     is_invisible?: boolean;
+    display_id?: string;
+    user_token?: string;
 }

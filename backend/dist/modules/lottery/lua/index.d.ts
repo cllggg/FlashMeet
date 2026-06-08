@@ -1,2 +1,1 @@
-declare const deductPrizeLua: string;
-export { deductPrizeLua };
+export declare const deductPrizeLua = "-- Lua script for atomic prize deduction\n-- KEYS[1] = prize stock key (lottery:pool:{pool_id}:prize:{prize_id}:stock)\n-- ARGV[1] = amount to deduct (always 1)\n-- Returns:\n--   >= 0 : remaining stock after deduction (\u6210\u529F)\n--   -1   : \u5E93\u5B58\u4E3A\u7A7A\n--   -2   : \u5E93\u5B58 key \u4E0D\u5B58\u5728\uFF08\u5956\u54C1\u672A\u521D\u59CB\u5316\uFF09\n\nlocal stock_str = redis.call('GET', KEYS[1])\nif stock_str == false then\n  return -2\nend\nlocal stock = tonumber(stock_str)\nif stock == nil or stock <= 0 then\n  return -1\nend\nlocal new_stock = redis.call('DECRBY', KEYS[1], 1)\nreturn new_stock\n";

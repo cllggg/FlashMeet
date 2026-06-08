@@ -12,16 +12,16 @@ const typeorm_1 = require("@nestjs/typeorm");
 const event_entity_1 = require("./entities/event.entity");
 const event_service_1 = require("./event.service");
 const event_controller_1 = require("./event.controller");
-const gateway_module_1 = require("../gateway/gateway.module");
+const host_presence_service_1 = require("./host-presence.service");
 let EventModule = class EventModule {
 };
 exports.EventModule = EventModule;
 exports.EventModule = EventModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([event_entity_1.Event]), (0, common_1.forwardRef)(() => gateway_module_1.GatewayModule)],
+        imports: [typeorm_1.TypeOrmModule.forFeature([event_entity_1.Event])],
         controllers: [event_controller_1.EventController],
-        providers: [event_service_1.EventService],
-        exports: [event_service_1.EventService],
+        providers: [event_service_1.EventService, host_presence_service_1.HostPresenceService],
+        exports: [event_service_1.EventService, host_presence_service_1.HostPresenceService],
     })
 ], EventModule);
 //# sourceMappingURL=event.module.js.map

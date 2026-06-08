@@ -16,43 +16,21 @@ exports.CheckinController = void 0;
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
 const checkin_service_1 = require("./checkin.service");
-const event_gateway_1 = require("../gateway/event.gateway");
 const checkin_dto_1 = require("./dto/checkin.dto");
 let CheckinController = class CheckinController {
     checkinService;
-    gateway;
-    constructor(checkinService, gateway) {
+    constructor(checkinService) {
         this.checkinService = checkinService;
-        this.gateway = gateway;
     }
-    async guestCheckIn(dto) {
-        const { checkin, user, isNew } = await this.checkinService.guestCheckIn(dto);
-        if (isNew) {
-            this.gateway.notifyUserCheckedIn(dto.event_id, {
-                user_id: user.user_id,
-                nickname: user.nickname,
-                name: checkin.name || user.nickname,
-                avatar_url: user.avatar_url,
-                phone: user.phone,
-                local_tags: checkin.local_tags,
-            });
-        }
-        return {
-            checkin,
-            user: { user_id: user.user_id, nickname: user.nickname, avatar_url: user.avatar_url, phone: user.phone },
-            isNew,
-        };
+    async guestCheckIn(dto, deviceToken) {
+        return this.checkinService.guestCheckIn(dto, deviceToken);
     }
     async checkIn(req, dto) {
-        const result = await this.checkinService.checkIn(req.user.userId, dto);
-        this.gateway.notifyUserCheckedIn(dto.event_id, {
-            user_id: result.user_id,
-            nickname: req.user.nickname || '暗星',
-            name: result.name || req.user.nickname || '暗星',
-            avatar_url: req.user.avatar_url,
-            local_tags: result.local_tags,
-        });
-        return result;
+        return this.checkinService.checkIn(req.user.userId, dto);
+    }
+    async resolve(body, deviceToken, userTokenHeader) {
+        const userToken = body?.user_token || userTokenHeader;
+        return this.checkinService.resolve(body?.event_id, deviceToken, userToken, body?.phone);
     }
     async getCheckins(eventId) {
         return this.checkinService.getCheckins(eventId);
@@ -69,8 +47,9 @@ exports.CheckinController = CheckinController;
 __decorate([
     (0, common_1.Post)('guest'),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Headers)('x-device-token')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [checkin_dto_1.CheckInDto]),
+    __metadata("design:paramtypes", [checkin_dto_1.CheckInDto, String]),
     __metadata("design:returntype", Promise)
 ], CheckinController.prototype, "guestCheckIn", null);
 __decorate([
@@ -82,6 +61,15 @@ __decorate([
     __metadata("design:paramtypes", [Object, checkin_dto_1.CheckInDto]),
     __metadata("design:returntype", Promise)
 ], CheckinController.prototype, "checkIn", null);
+__decorate([
+    (0, common_1.Post)('resolve'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Headers)('x-device-token')),
+    __param(2, (0, common_1.Headers)('x-user-token')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, String]),
+    __metadata("design:returntype", Promise)
+], CheckinController.prototype, "resolve", null);
 __decorate([
     (0, common_1.Get)('event/:event_id'),
     __param(0, (0, common_1.Param)('event_id')),
@@ -107,8 +95,6 @@ __decorate([
 ], CheckinController.prototype, "updateTags", null);
 exports.CheckinController = CheckinController = __decorate([
     (0, common_1.Controller)('checkin'),
-    __param(1, (0, common_1.Inject)((0, common_1.forwardRef)(() => event_gateway_1.EventGateway))),
-    __metadata("design:paramtypes", [checkin_service_1.CheckinService,
-        event_gateway_1.EventGateway])
+    __metadata("design:paramtypes", [checkin_service_1.CheckinService])
 ], CheckinController);
 //# sourceMappingURL=checkin.controller.js.map

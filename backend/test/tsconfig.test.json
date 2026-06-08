@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "resolvePackageJsonExports": false,
+    "allowSyntheticDefaultImports": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "ES2021",
+    "skipLibCheck": true,
+    "strictNullChecks": false,
+    "outDir": "./dist-test"
+  },
+  "include": ["../src/**/*", "./**/*"]
+}

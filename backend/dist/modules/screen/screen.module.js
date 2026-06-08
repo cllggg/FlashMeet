@@ -13,12 +13,13 @@ const screen_controller_1 = require("./screen.controller");
 const event_entity_1 = require("../event/entities/event.entity");
 const checkin_entity_1 = require("../checkin/entities/checkin.entity");
 const lottery_record_entity_1 = require("../lottery/entities/lottery-record.entity");
+const gateway_module_1 = require("../gateway/gateway.module");
 let ScreenModule = class ScreenModule {
 };
 exports.ScreenModule = ScreenModule;
 exports.ScreenModule = ScreenModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([event_entity_1.Event, checkin_entity_1.CheckIn, lottery_record_entity_1.LotteryRecord])],
+        imports: [typeorm_1.TypeOrmModule.forFeature([event_entity_1.Event, checkin_entity_1.CheckIn, lottery_record_entity_1.LotteryRecord]), gateway_module_1.GatewayModule],
         controllers: [screen_controller_1.ScreenController],
     })
 ], ScreenModule);

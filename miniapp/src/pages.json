@@ -37,6 +37,30 @@
       }
     },
     {
+      "path": "pages/user/icebreaker",
+      "style": {
+        "navigationBarTitleText": "破冰"
+      }
+    },
+    {
+      "path": "pages/user/match",
+      "style": {
+        "navigationBarTitleText": "灵魂匹配"
+      }
+    },
+    {
+      "path": "pages/user/chat",
+      "style": {
+        "navigationBarTitleText": "双盲聊天"
+      }
+    },
+    {
+      "path": "pages/user/social-pool",
+      "style": {
+        "navigationBarTitleText": "社交沉淀池"
+      }
+    },
+    {
       "path": "pages/user/achievement",
       "style": {
         "navigationBarTitleText": "成就卡"
@@ -58,6 +82,12 @@
       "path": "pages/host/lottery-manage",
       "style": {
         "navigationBarTitleText": "抽奖管理"
+      }
+    },
+    {
+      "path": "pages/host/icebreaker-manage",
+      "style": {
+        "navigationBarTitleText": "破冰管理"
       }
     }
   ],

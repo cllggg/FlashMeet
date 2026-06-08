@@ -14,4 +14,5 @@ export interface PrizeItem {
     total_count: number;
     remaining_count: number;
     image_url?: string;
+    value?: number;
 }

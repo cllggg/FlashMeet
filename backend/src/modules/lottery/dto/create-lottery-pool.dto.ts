@@ -11,6 +11,10 @@ class PrizeItemDto {
   @IsString()
   @IsOptional()
   image_url?: string;
+
+  @IsNumber()
+  @IsOptional()
+  value?: number;
 }
 
 export class CreateLotteryPoolDto {

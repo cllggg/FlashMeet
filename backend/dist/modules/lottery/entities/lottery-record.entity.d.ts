@@ -11,5 +11,6 @@ export declare class LotteryRecord {
     pool: LotteryPool;
     prize_name: string;
     prize_image_url: string;
+    prize_value: number;
     won_at: Date;
 }

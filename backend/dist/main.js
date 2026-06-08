@@ -37,6 +37,7 @@ const core_1 = require("@nestjs/core");
 const common_1 = require("@nestjs/common");
 const app_module_1 = require("./app.module");
 const os = __importStar(require("os"));
+const express_1 = require("express");
 function getLanIp() {
     const interfaces = os.networkInterfaces();
     for (const name of Object.keys(interfaces)) {
@@ -52,9 +53,11 @@ function getLanIp() {
     return '127.0.0.1';
 }
 async function bootstrap() {
-    const app = await core_1.NestFactory.create(app_module_1.AppModule);
+    const app = await core_1.NestFactory.create(app_module_1.AppModule, { bodyParser: false });
+    app.use((0, express_1.json)({ limit: '10mb' }));
+    app.use((0, express_1.urlencoded)({ limit: '10mb', extended: true }));
     app.enableCors({
-        origin: '*',
+        origin: process.env.CORS_ORIGIN?.split(',') || true,
         credentials: true,
     });
     app.useGlobalPipes(new common_1.ValidationPipe({

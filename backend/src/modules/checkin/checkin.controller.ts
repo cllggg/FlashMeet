@@ -3,62 +3,54 @@ import {
   Get,
   Post,
   Patch,
+  Headers,
   Param,
   Body,
   UseGuards,
   Req,
-  Inject,
-  forwardRef,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CheckinService } from './checkin.service';
-import { EventGateway } from '../gateway/event.gateway';
 import { CheckInDto } from './dto/checkin.dto';
 
 @Controller('checkin')
 export class CheckinController {
-  constructor(
-    private readonly checkinService: CheckinService,
-    @Inject(forwardRef(() => EventGateway))
-    private readonly gateway: EventGateway,
-  ) {}
+  constructor(private readonly checkinService: CheckinService) {}
 
   @Post('guest')
-  async guestCheckIn(@Body() dto: CheckInDto) {
-    const { checkin, user, isNew } = await this.checkinService.guestCheckIn(dto);
-
-    if (isNew) {
-      this.gateway.notifyUserCheckedIn(dto.event_id, {
-        user_id: user.user_id,
-        nickname: user.nickname,
-        name: checkin.name || user.nickname,
-        avatar_url: user.avatar_url,
-        phone: user.phone,
-        local_tags: checkin.local_tags,
-      });
-    }
-
-    return {
-      checkin,
-      user: { user_id: user.user_id, nickname: user.nickname, avatar_url: user.avatar_url, phone: user.phone },
-      isNew,
-    };
+  async guestCheckIn(
+    @Body() dto: CheckInDto,
+    @Headers('x-device-token') deviceToken?: string,
+  ) {
+    // 签到完成后由 CheckinService 抛 CHECKIN_CREATED 事件，Gateway 监听广播
+    return this.checkinService.guestCheckIn(dto, deviceToken);
   }
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
   async checkIn(@Req() req: any, @Body() dto: CheckInDto) {
-    const result = await this.checkinService.checkIn(req.user.userId, dto);
+    return this.checkinService.checkIn(req.user.userId, dto);
+  }
 
-    this.gateway.notifyUserCheckedIn(dto.event_id, {
-      user_id: result.user_id,
-      nickname: req.user.nickname || '暗星',
-      name: result.name || req.user.nickname || '暗星',
-      avatar_url: req.user.avatar_url,
-      local_tags: result.local_tags,
-    });
-
-    return result;
+  /**
+   * 扫码静默召回：多身份召回 + 返回 user_token
+   * - 200 found=true → 前端直接进入"已签到"视图
+   * - 200 found=false → 前端展示录入表单（可预填 user profile）
+   * 优先级: X-User-Token (header) / body.user_token > X-Device-Token > body.phone
+   */
+  @Post('resolve')
+  async resolve(
+    @Body() body: { event_id: string; user_token?: string; phone?: string },
+    @Headers('x-device-token') deviceToken?: string,
+    @Headers('x-user-token') userTokenHeader?: string,
+  ) {
+    const userToken = body?.user_token || userTokenHeader;
+    return this.checkinService.resolve(
+      body?.event_id,
+      deviceToken,
+      userToken,
+      body?.phone,
+    );
   }
 
   @Get('event/:event_id')

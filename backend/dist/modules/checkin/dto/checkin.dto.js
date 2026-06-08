@@ -18,6 +18,8 @@ class CheckInDto {
     avatar_url;
     local_tags;
     is_invisible;
+    display_id;
+    user_token;
 }
 exports.CheckInDto = CheckInDto;
 __decorate([
@@ -27,6 +29,7 @@ __decorate([
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.MaxLength)(16),
     __metadata("design:type", String)
 ], CheckInDto.prototype, "name", void 0);
 __decorate([
@@ -49,4 +52,19 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Boolean)
 ], CheckInDto.prototype, "is_invisible", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.MaxLength)(32),
+    (0, class_validator_1.Matches)(/^[A-Za-z0-9_#\u4e00-\u9fa5]+$/, {
+        message: 'display_id contains invalid characters',
+    }),
+    __metadata("design:type", String)
+], CheckInDto.prototype, "display_id", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.MaxLength)(80),
+    __metadata("design:type", String)
+], CheckInDto.prototype, "user_token", void 0);
 //# sourceMappingURL=checkin.dto.js.map

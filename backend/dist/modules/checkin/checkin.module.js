@@ -14,16 +14,12 @@ const global_user_entity_1 = require("../global-user/entities/global-user.entity
 const event_entity_1 = require("../event/entities/event.entity");
 const checkin_service_1 = require("./checkin.service");
 const checkin_controller_1 = require("./checkin.controller");
-const gateway_module_1 = require("../gateway/gateway.module");
 let CheckinModule = class CheckinModule {
 };
 exports.CheckinModule = CheckinModule;
 exports.CheckinModule = CheckinModule = __decorate([
     (0, common_1.Module)({
-        imports: [
-            typeorm_1.TypeOrmModule.forFeature([checkin_entity_1.CheckIn, event_entity_1.Event, global_user_entity_1.GlobalUser]),
-            (0, common_1.forwardRef)(() => gateway_module_1.GatewayModule),
-        ],
+        imports: [typeorm_1.TypeOrmModule.forFeature([checkin_entity_1.CheckIn, event_entity_1.Event, global_user_entity_1.GlobalUser])],
         controllers: [checkin_controller_1.CheckinController],
         providers: [checkin_service_1.CheckinService],
         exports: [checkin_service_1.CheckinService],

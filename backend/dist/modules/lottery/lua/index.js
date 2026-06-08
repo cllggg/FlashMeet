@@ -1,42 +1,23 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deductPrizeLua = void 0;
-const fs = __importStar(require("fs"));
-const path = __importStar(require("path"));
-const luaPath = path.join(__dirname, 'lua', 'deduct-prize.lua');
-const deductPrizeLua = fs.readFileSync(luaPath, 'utf8');
-exports.deductPrizeLua = deductPrizeLua;
+exports.deductPrizeLua = `-- Lua script for atomic prize deduction
+-- KEYS[1] = prize stock key (lottery:pool:{pool_id}:prize:{prize_id}:stock)
+-- ARGV[1] = amount to deduct (always 1)
+-- Returns:
+--   >= 0 : remaining stock after deduction (成功)
+--   -1   : 库存为空
+--   -2   : 库存 key 不存在（奖品未初始化）
+
+local stock_str = redis.call('GET', KEYS[1])
+if stock_str == false then
+  return -2
+end
+local stock = tonumber(stock_str)
+if stock == nil or stock <= 0 then
+  return -1
+end
+local new_stock = redis.call('DECRBY', KEYS[1], 1)
+return new_stock
+`;
 //# sourceMappingURL=index.js.map

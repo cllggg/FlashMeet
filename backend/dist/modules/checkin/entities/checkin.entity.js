@@ -22,6 +22,7 @@ let CheckIn = class CheckIn {
     name;
     local_tags;
     is_invisible;
+    display_id;
     checked_in_at;
 };
 exports.CheckIn = CheckIn;
@@ -59,6 +60,10 @@ __decorate([
     (0, typeorm_1.Column)({ default: false }),
     __metadata("design:type", Boolean)
 ], CheckIn.prototype, "is_invisible", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ length: 32, nullable: true }),
+    __metadata("design:type", String)
+], CheckIn.prototype, "display_id", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)

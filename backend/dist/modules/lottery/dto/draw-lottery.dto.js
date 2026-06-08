@@ -15,6 +15,8 @@ class DrawLotteryDto {
     event_id;
     pool_id;
     request_id;
+    count;
+    pre_picked_user_ids;
 }
 exports.DrawLotteryDto = DrawLotteryDto;
 __decorate([
@@ -30,4 +32,18 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], DrawLotteryDto.prototype, "request_id", void 0);
+__decorate([
+    (0, class_validator_1.IsInt)(),
+    (0, class_validator_1.Min)(1),
+    (0, class_validator_1.Max)(50),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], DrawLotteryDto.prototype, "count", void 0);
+__decorate([
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ArrayMaxSize)(50),
+    (0, class_validator_1.IsString)({ each: true }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Array)
+], DrawLotteryDto.prototype, "pre_picked_user_ids", void 0);
 //# sourceMappingURL=draw-lottery.dto.js.map

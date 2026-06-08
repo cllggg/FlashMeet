@@ -9,5 +9,6 @@ export declare class CheckIn {
     name: string;
     local_tags: string[];
     is_invisible: boolean;
+    display_id: string;
     checked_in_at: Date;
 }
